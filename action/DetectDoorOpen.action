@@ -1,0 +1,8 @@
+#Difine the goal
+string data
+---
+#Difine the result
+string data
+---
+#Difine the a feedback message
+string data
