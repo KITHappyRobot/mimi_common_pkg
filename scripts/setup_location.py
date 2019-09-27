@@ -77,29 +77,39 @@ class Setting(smach.State):
                     second_list = []
                     second_list.append(userdata.setting_in_data)
                     self.name_list.append(userdata.setting_in_data)
-                    #while not rospy.is_shutdown() and self.location_pose_x == 0.00:
-                    #    rospy.loginfo("Waiting for Odometry...")
-                    #    rospy.sleep(1.0)
-                    #second_list.append(self.location_pose_x)
-                    #second_list.append(self.location_pose_y)
-                    #second_list.append(self.location_pose_z)
-                    #second_list.append(self.location_pose_w)
-                    second_list.append(1)
-                    second_list.append(2)
-                    second_list.append(3)
-                    second_list.append(4)
+                    while not rospy.is_shutdown() and self.location_pose_x == 0.00:
+                        rospy.loginfo("Waiting for Odometry...")
+                        rospy.sleep(1.0)
+                    second_list.append(self.location_pose_x)
+                    second_list.append(self.location_pose_y)
+                    second_list.append(self.location_pose_z)
+                    second_list.append(self.location_pose_w)
+                    #second_list.append(1)
+                    #second_list.append(2)
+                    #second_list.append(3)
+                    #second_list.append(4)
                     self.location_list.append(second_list)
                     rospy.loginfo("<" + userdata.setting_in_data + "> " + str(second_list))
                     second_list = []
                     rospy.sleep(0.1)
                     return 'set_complete'
 
+    def getMapCoordinateCB(self, receive_msg):
+        try:
+            self.location_pose_x = receive_msg.x
+            self.location_pose_y = receive_msg.y
+        except IndexError:
+            pass
+
     def getOdomCB(self, receive_msg):
         try:
-            self.location_pose_x = receive_msg.pose.pose.position.x
-            self.location_pose_y = receive_msg.pose.pose.position.y
-            self.location_pose_z = receive_msg.pose.pose.orientation.z
-            self.location_pose_w = receive_msg.pose.pose.orientation.w
+            #self.location_pose_x = receive_msg.pose.pose.position.x
+            #self.location_pose_y = receive_msg.pose.pose.position.y
+            if receive_msg.child_frame_id == 'base_footprint':
+                self.location_pose_x = receive_msg.pose.pose.position.x
+                self.location_pose_y = receive_msg.pose.pose.position.y
+                self.location_pose_z = receive_msg.pose.pose.orientation.z
+                self.location_pose_w = receive_msg.pose.pose.orientation.w
         except IndexError:
             pass
 
@@ -117,7 +127,7 @@ class Saving(smach.State):
             print userdata.saving_in_data
             rospy.set_param('/location_list', userdata.saving_in_data)
             #rosparam.dump_params('/home/athome/catkin_ws/src/common_pkg/config/common_function_params.yaml', '/location_list')
-            rosparam.dump_params('/home/issei/catkin_ws/src/common_pkg/config/common_function_params.yaml', '/location_list')
+            rosparam.dump_params('/home/athome/catkin_ws/src/mimi_common_pkg/config/location_params.yaml', '/location_list')
             rospy.loginfo("Created!")
             return 'save_finish'
 
