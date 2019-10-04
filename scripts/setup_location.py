@@ -4,7 +4,8 @@
 #Title: Locationの名前・座標をパラメータに登録するROSノード
 #Author: Issei Iida
 #Date: 2019/09/05
-#Memo:
+#Memo: location_listは「name, position_x, position_y, orientation_z, orientationw」
+#      のlistのlist
 #--------------------------------------------------------------------
 
 #ROS関係
@@ -33,7 +34,6 @@ class Waiting(smach.State):
             rospy.loginfo("Waiting for topic...")
             rospy.sleep(1.5)
         userdata.waiting_out_data = self.location_name
-        rospy.sleep(0.1)
         self.location_name = 'Null'
         return 'set_start'
 
@@ -66,33 +66,26 @@ class Setting(smach.State):
             if userdata.setting_in_data == 'set_finish':
                 rospy.loginfo("Finish Setting")
                 userdata.setting_out_data = self.location_list
-                print self.location_list
                 return 'set_finish'
+            elif userdata.setting_in_data in self.name_list:
+                rospy.loginfo("LocationName already exists")
+                return 'set_complete'
             else:
-                if userdata.setting_in_data in self.name_list:
-                    rospy.loginfo("LocationName already exists")
-                    return 'set_complete'
-                else:
-                    rospy.loginfo("Add <" + userdata.setting_in_data + "> position")
-                    second_list = []
-                    second_list.append(userdata.setting_in_data)
-                    self.name_list.append(userdata.setting_in_data)
-                    while not rospy.is_shutdown() and self.location_pose_x == 0.00:
-                        rospy.loginfo("Waiting for Odometry...")
-                        rospy.sleep(1.0)
-                    second_list.append(self.location_pose_x)
-                    second_list.append(self.location_pose_y)
-                    second_list.append(self.location_pose_z)
-                    second_list.append(self.location_pose_w)
-                    #second_list.append(1)
-                    #second_list.append(2)
-                    #second_list.append(3)
-                    #second_list.append(4)
-                    self.location_list.append(second_list)
-                    rospy.loginfo("<" + userdata.setting_in_data + "> " + str(second_list))
-                    second_list = []
-                    rospy.sleep(0.1)
-                    return 'set_complete'
+                rospy.loginfo("Add <" + userdata.setting_in_data + "> position")
+                second_list = []
+                second_list.append(userdata.setting_in_data)
+                self.name_list.append(userdata.setting_in_data)
+                while not rospy.is_shutdown() and self.location_pose_x == 0.00:
+                    rospy.loginfo("Waiting for Odometry...")
+                    rospy.sleep(1.0)
+                second_list.append(self.location_pose_x)
+                second_list.append(self.location_pose_y)
+                second_list.append(self.location_pose_z)
+                second_list.append(self.location_pose_w)
+                self.location_list.append(second_list)
+                rospy.loginfo("<" + userdata.setting_in_data + "> " + str(second_list))
+                second_list = []
+                return 'set_complete'
 
     def getMapCoordinateCB(self, receive_msg):
         try:
@@ -103,8 +96,6 @@ class Setting(smach.State):
 
     def getOdomCB(self, receive_msg):
         try:
-            #self.location_pose_x = receive_msg.pose.pose.position.x
-            #self.location_pose_y = receive_msg.pose.pose.position.y
             if receive_msg.child_frame_id == 'base_footprint':
                 self.location_pose_x = receive_msg.pose.pose.position.x
                 self.location_pose_y = receive_msg.pose.pose.position.y
@@ -124,17 +115,13 @@ class Saving(smach.State):
         rospy.loginfo("Executing state: SAVING")
         while not rospy.is_shutdown():
             rospy.loginfo("Create ROSParameter")
-            print userdata.saving_in_data
             rospy.set_param('/location_list', userdata.saving_in_data)
-            #rosparam.dump_params('/home/athome/catkin_ws/src/common_pkg/config/common_function_params.yaml', '/location_list')
             rosparam.dump_params('/home/athome/catkin_ws/src/mimi_common_pkg/config/location_params.yaml', '/location_list')
             rospy.loginfo("Created!")
             return 'save_finish'
 
 
 def main():
-    rospy.init_node('setup_location', anonymous = True)
-
     sm = smach.StateMachine(outcomes=['finish_setup_location'])
     sm.userdata.location_name = 'Null'
     with sm:
@@ -155,4 +142,5 @@ def main():
     outcome = sm.execute()
 
 if __name__ == '__main__':
+    rospy.init_node('setup_location', anonymous = True)
     main()
