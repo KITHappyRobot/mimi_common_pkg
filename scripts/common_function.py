@@ -26,10 +26,11 @@ pub_cmd_vel_mux = rospy.Publisher('cmd_vel_mux/input/teleop', Twist, queue_size 
 
 #話す *発話エンジンはpicottsで設定する
 def speak(phrase):
+    print phrase
     pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
-    rospy.sleep(0.1)
+    rospy.sleep(2.5)
     pub_speak.publish(phrase)
-    rospy.sleep(1.0)
+    rospy.sleep(2.0)
 
 #m6(首のサーボモータ)の制御
 def m6Control(value):
