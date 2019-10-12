@@ -23,7 +23,7 @@ from mimi_common_pkg.msg import (FindPersonAction,
                                  FindPersonResult) 
 
 #sys.path.append(roslib.packages.get_pkg_dir('mimi_common_pkg') + 'scripts')
-sys.path.insert(0, '/home/issei/catkin_ws/src/mimi_common_pkg/scripts/')
+sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
 from common_function import *
 
 
@@ -51,11 +51,12 @@ class Find(smach.State):
         try:
             rospy.loginfo('Executing state FIND')
             result = userdata.result_in
-            #m6rControl(-0.2)
+            m6rControl(-0.2)
             rospy.sleep(1.0)
-            #while self.person_flg == False and rospy.Duration(20):
-            #    #angularControl(0.2)
-            #    print 'gulu gulu gulu'
+            while self.person_flg == False and rospy.Duration(20):
+                angularControl(0.2)
+                print 'gulu gulu gulu'
+            angularControl(0.0)
             if self.person_flg == True:
                 rospy.loginfo('Find!!')
                 self.person_flg = False
