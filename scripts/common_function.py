@@ -23,7 +23,7 @@ from geometry_msgs.msg import Twist
 #Grobal Publisher
 pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
 pub_cmd_vel_mux = rospy.Publisher('cmd_vel_mux/input/teleop', Twist, queue_size = 1)
-
+pub_m6 = rospy.Publisher('/m6_controller/command', Float64, queue_size = 1)
 
 #話す *発話エンジンはpicottsで設定する
 def speak(phrase):
@@ -33,7 +33,6 @@ def speak(phrase):
 
 #m6(首のサーボモータ)の制御
 def m6Control(value):
-    pub_m6 = rospy.Publisher('/m6_controller/command', Float64, queue_size = 1)
     #念のため型変換
     data = Float64()
     data = value

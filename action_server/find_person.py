@@ -50,11 +50,15 @@ class Find(smach.State):
     def execute(self, userdata):
         try:
             rospy.loginfo('Executing state FIND')
+            print 'A'
             result = userdata.result_in
-            m6rControl(-0.2)
+            print 'B'
             rospy.sleep(1.0)
-            while self.person_flg == False and rospy.Duration(20):
-                angularControl(0.2)
+            m6Control(-0.2)
+            rospy.sleep(1.0)
+            while self.person_flg == False:
+                angularControl(0.3)
+                rospy.sleep(0.3)
                 print 'gulu gulu gulu'
             angularControl(0.0)
             if self.person_flg == True:
