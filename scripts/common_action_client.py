@@ -31,7 +31,55 @@ def detectDoorOpenAC():
             rospy.loginfo("Success DetectDoorOpen")
             return 'success'
         else:
-            rospy.loginfo("Faild DetectDoorOpen")
-            return 'faild'
+            rospy.loginfo("Failed DetectDoorOpen")
+            return 'failed'
+    except rospy.ROSInterruptException:
+        pass
+
+def approachPersonAC():
+    try:
+        rospy.loginfo("Start ApproachPerson")
+        ac = actionlib.SimpleActionClient('approach_person', ApproachPersonAction)
+        ac.wait_for_server()
+
+        goal = ApproachPersonGoal()
+        goal.data = 'start'
+
+        ac.send_goal(goal)
+        ac.wait_for_result()
+
+        result = ac.get_result()
+        print result
+        if result.data == 'success':
+            rospy.loginfo("Success ApproachPerson")
+            return 'success'
+        elif result.data == 'aborted':
+            rospy.loginfo("Aborted ApproachPerson")
+            return 'aborted'
+        else:
+            return 'failed'
+    except rospy.ROSInterruptException:
+        pass
+
+def findPerson():
+    try: 
+        rospy.loginfo('Start FindPerson')
+        ac = actionlib.SimpleActionClient('find_person', FindPersonAction)
+        ac.wait_for_server()
+
+        goal = FindPersonGoal()
+        goal.data = 'start'
+
+        ac.send_goal(goal)
+        ac.wait_for_result()
+
+        result = ac.get_result()
+        print result
+        if result.data == 'success':
+            rospy.loginfo('Success FindPerson')
+            return 'success'
+        else:
+            rospy.loginfo('Failed FindPerson')
+            return 'failed'
     except rospy.ROSInterruptException:
         pass

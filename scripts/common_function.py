@@ -21,14 +21,13 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 
 #Grobal Publisher
+pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
 pub_cmd_vel_mux = rospy.Publisher('cmd_vel_mux/input/teleop', Twist, queue_size = 1)
 
 
 #話す *発話エンジンはpicottsで設定する
 def speak(phrase):
     print phrase
-    pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
-    rospy.sleep(2.5)
     pub_speak.publish(phrase)
     rospy.sleep(2.0)
 

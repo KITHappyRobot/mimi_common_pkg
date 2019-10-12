@@ -15,9 +15,12 @@ import rospy
 import roslib
 import actionlib
 from std_msgs.msg import String
-from mimi_common_pkg.msg import DetectDoorOpenAction, DetectDoorOpenResult, DetectDoorOpenFeedback 
+from mimi_common_pkg.msg import (DetectDoorOpenAction,
+                                 DetectDoorOpenResult,
+                                 DetectDoorOpenFeedback) 
 
-sys.path.append(roslib.packages.get_pkg_dir('mimi_common_pkg') + 'scripts')
+#sys.path.append(roslib.packages.get_pkg_dir('mimi_common_pkg') + 'scripts')
+sys.path.insert(0, '/home/issei/catkin_ws/src/mimi_common_pkg/scripts/')
 from common_function import *
 
 
@@ -26,7 +29,8 @@ class DetectDoorOpenAS():
         #Subscriber
         self.laser_sub = rospy.Subscriber('/scan', LaserScan, self.laserCB)
         #Make ActionServer
-        self.sas = actionlib.SimpleActionServer('detect_door_open',
+        self.sas = actionlib.SimpleActionServer(
+                'detect_door_open',
                 DetectDoorOpenAction,
                 execute_cb = self.execute,
                 auto_start = False)
