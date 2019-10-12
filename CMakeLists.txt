@@ -69,6 +69,8 @@ add_action_files(
     action
     FILES
     DetectDoorOpen.action
+    ApproachPerson.action
+    FindPerson.action
     )
 
 ## Generate added messages and services with any dependencies listed here
