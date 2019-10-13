@@ -1,0 +1,10 @@
+<launch>
+
+    <node pkg="mimi_common_pkg" name="detect_door_open" type="detect_door_open.py"/>
+    <node pkg="mimi_common_pkg" name="find_person" type="find_person.py"/>
+    <node pkg="mimi_common_pkg" name="approach_person" type="approach_person.py"/>
+
+</launch>
+
+
+

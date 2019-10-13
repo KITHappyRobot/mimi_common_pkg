@@ -10,6 +10,8 @@ project(mimi_common_pkg)
 find_package(catkin REQUIRED COMPONENTS
     roscpp
     rospy
+    smach
+    smach_ros
     std_msgs
     genmsg
     actionlib_msgs

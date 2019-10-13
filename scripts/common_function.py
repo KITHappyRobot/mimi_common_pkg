@@ -76,27 +76,3 @@ def searchLocationName(target_name):
         elif i == len(file_data):
             rospy.loginfo("Not found <" + target_name + "> in LocationDict")
             return 'faild'
-
-#ナビゲーションを実行
-def startNavigation(data_list):
-    rospy.loginfo("StartNavigation")
-    #ActionClientを起動
-    ac = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-    ac.wait_for_server()
-    clear_costmaps = rospy.ServiceProxy('move_base/clear_costmaps', Empty)
-    rospy.loginfo("MoveBaseActionServer comes up")
-    #Goalを作成
-    goal = MoveBaseGoal()
-    goal.target_pose.header.frame_id = 'map'
-    goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = data_list[0]
-    goal.target_pose.pose.position.y = data_list[1]
-    goal.target_pose.pose.orientation.z = data_list[2]
-    goal.target_pose.pose.orientation.w = data_list[4]
-    #Costmapを消去
-    rospy.wait_for_service('move_base/clear_costmaps')
-    clear_costmaps()
-    #Goalを送信
-    ac.send_goal(goal)
-    #Successまで待機
-    rospy.loginfo("Navigation complete!")

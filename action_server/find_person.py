@@ -22,8 +22,7 @@ from mimi_common_pkg.msg import (FindPersonAction,
                                  FindPersonFeedback,
                                  FindPersonResult) 
 
-#sys.path.append(roslib.packages.get_pkg_dir('mimi_common_pkg') + 'scripts')
-sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
+sys.path.insert(0, '/home/issei/catkin_ws/src/mimi_common_pkg/scripts/')
 from common_function import *
 
 
@@ -50,25 +49,20 @@ class Find(smach.State):
     def execute(self, userdata):
         try:
             rospy.loginfo('Executing state FIND')
-            print 'A'
             result = userdata.result_in
-            print 'B'
-            rospy.sleep(1.0)
             m6Control(-0.2)
             rospy.sleep(1.0)
             while self.person_flg == False:
                 angularControl(0.3)
-                rospy.sleep(0.3)
-                print 'gulu gulu gulu'
+                rospy.loginfo('Finding...')
+                rospy.sleep(0.2)
             angularControl(0.0)
             if self.person_flg == True:
-                rospy.loginfo('Find!!')
                 self.person_flg = False
                 result.data = 'success'
                 userdata.result_out = result
                 return 'find'
             else:
-                rospy.loginfo('Not find...')
                 result.data = 'failure'
                 userdata.result_out = result
                 return 'not_find'

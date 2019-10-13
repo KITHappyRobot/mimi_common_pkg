@@ -19,7 +19,6 @@ from mimi_common_pkg.msg import (DetectDoorOpenAction,
                                  DetectDoorOpenResult,
                                  DetectDoorOpenFeedback) 
 
-#sys.path.append(roslib.packages.get_pkg_dir('mimi_common_pkg') + 'scripts')
 sys.path.insert(0, '/home/issei/catkin_ws/src/mimi_common_pkg/scripts/')
 from common_function import *
 
