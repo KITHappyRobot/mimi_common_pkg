@@ -32,7 +32,6 @@ def jtalk(t):
     wr = subprocess.Popen(aplay)
 
 def audioOutput(text):
-    play_time = 0
     pygame.mixer.init()
     if text == 'question':
         pygame.mixer.music.load('/home/issei/catkin_ws/src/mimi_common_pkg/mp3_file/Quiz-Question01-1.mp3')
@@ -51,7 +50,6 @@ def audioOutput(text):
     pygame.mixer.music.play(1)
     print play_time
     time.sleep(play_time)
-    rospy.sleep(0.5)
     pygame.mixer.music.stop()
 
 def main():
