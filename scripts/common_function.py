@@ -24,60 +24,17 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 
-#Grobal Publisher
+#Grobal
 pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
 pub_cmd_vel_mux = rospy.Publisher('cmd_vel_mux/input/teleop', Twist, queue_size = 1)
 pub_m6 = rospy.Publisher('/m6_controller/command', Float64, queue_size = 1)
+
 
 #話す *発話エンジンはpicottsで設定する
 def speak(phrase):
     pub_speak.publish(phrase)
     rospy.sleep(2.0)
 
-def openjSpeak(phrase):
-    sound_time = 0
-    print phrase
-    open_jtalk=['open_jtalk']
-    mech=['-x','/var/lib/mecab/dic/open-jtalk/naist-jdic']
-    htsvoice=['-m','/usr/share/open_jtalk/voice/mei/mei_happy.htsvoice']
-    speed=['-r','0.9']
-    pitch=['-fm', '-1.0']
-    outwav=['-ow','open_jtalk.wav']
-    #wavファイルの再生時間を取得
-    pygame.mixer.init(frequency = 44100)
-    pygame.mixer.music.load('/home/issei/catkin_ws/src/ros_tutorial/src/open_jtalk.wav')
-    sounds = pygame.mixer.Sound('open_jtalk.wav')
-    sound_time = sounds.get_length()
-    print sound_time
-    cmd=open_jtalk+mech+htsvoice+speed+pitch+outwav
-    c = subprocess.Popen(cmd,stdin=subprocess.PIPE)
-    c.stdin.write(phrase)
-    c.stdin.close()
-    c.wait()
-    aplay = ['aplay','-q','open_jtalk.wav']
-    wr = subprocess.Popen(aplay)
-    rospy.sleep(sound_time + 1.0)
-
-def mp3Output(text):
-    pygame.mixer.init()
-    if text == 'question':
-        pygame.mixer.music.load('/home/issei/catkin_ws/src/mimi_common_pkg/mp3_file/Quiz-Question01-1.mp3')
-        play_time = mp3('/home/issei/catkin_ws/src/mimi_common_pkg/mp3_file/Quiz-Question01-1.mp3').info.length
-    elif text == 'thinking':
-        pygame.mixer.music.load('/home/issei/catkin_ws/src/mimi_common_pkg/mp3_file/thinkingtime5.mp3')
-        play_time = mp3('/home/issei/catkin_ws/src/mimi_common_pkg/mp3_file/thinkingtime5.mp3').info.length
-    elif text == 'answer':
-        pygame.mixer.music.load('/home/issei/catkin_ws/src/mimi_common_pkg/mp3_file/Quiz-Results01-1.mp3')
-        play_time = mp3('/home/issei/catkin_ws/src/mimi_common_pkg/mp3_file/Quiz-Results01-1.mp3').info.length
-        play_time = play_time - 1.5
-    elif text == 'end':
-        pygame.mixer.music.load('/home/issei/catkin_ws/src/mimi_common_pkg/mp3_file/Phrase05-3.mp3')
-        play_time = mp3('/home/issei/catkin_ws/src/mimi_common_pkg/mp3_file/Phrase05-3.mp3').info.length
-        play_time = play_time
-    pygame.mixer.music.play(1)
-    print play_time
-    time.sleep(play_time)
-    pygame.mixer.music.stop()
 
 #m6(首のサーボモータ)の制御
 def m6Control(value):
@@ -88,12 +45,14 @@ def m6Control(value):
     pub_m6.publish(data)
     rospy.loginfo("Changing m6 pose")
 
+
 #kobukiの前進・後進
 def linearControl(value):
     twist_cmd = Twist()
     twist_cmd.linear.x = value
     rospy.sleep(0.1)
     pub_cmd_vel_mux.publish(twist_cmd)
+
 
 #kobukiの回転
 def angularControl(value):

@@ -30,7 +30,8 @@ class Find(smach.State):
     def __init__(self):
         smach.State.__init__(
                 self,
-                outcomes = ['find','not_find'],
+                outcomes = ['find',
+                            'not_find'],
                 input_keys = ['result_in'],
                 output_keys = ['result_out'])
         #Subscriber
@@ -74,7 +75,8 @@ def main():
             outcomes = ['success',
                         'failure',
                         'preempted'],
-            input_keys = ['goal_message','result_message'],
+            input_keys = ['goal_message',
+                          'result_message'],
             output_keys = ['result_message'])
 
     with sm_top:

@@ -32,7 +32,8 @@ class FindPerson(smach.State):
     def __init__(self):
         smach.State.__init__(
                 self,
-                outcomes = ['find', 'not_find'],
+                outcomes = ['find',
+                            'not_find'],
                 input_keys = ['goal_in'])
 
     def execute(self, userdata):
@@ -55,7 +56,8 @@ class GetCootdinate(smach.State):
     def __init__(self):
         smach.State.__init__(
                 self,
-                outcomes = ['get', 'not_get'],
+                outcomes = ['get',
+                            'not_get'],
                 output_keys = ['coord_out'])
         #Subscriber
         #rospy.Subscriber('get_distance_pcl/Coordinate_xyz', Coordinate_xyz, self.personCoordCB)
@@ -99,7 +101,8 @@ class Navigation(smach.State):
     def __init__(self):
         smach.State.__init__(
                 self,
-                outcomes = ['arrive', 'not_arrive'],
+                outcomes = ['arrive',
+                            'not_arrive'],
                 input_keys = ['result_message',
                               'coord_in'],
                 output_keys = ['result_message'])
@@ -133,7 +136,8 @@ def main():
                         'navi_failed',
                         'get_failed',
                         'preempted'],
-            input_keys = ['goal_message', 'result_message'],
+            input_keys = ['goal_message',
+                          'result_message'],
             output_keys = ['result_message'])
 
     with sm_top:
@@ -164,7 +168,9 @@ def main():
             ApproachPersonAction,
             wrapped_container = sm_top,
             succeeded_outcomes = ['success'],
-            aborted_outcomes = ['find_failed', 'get_failed', 'navi_failed'],
+            aborted_outcomes = ['find_failed',
+                                'get_failed',
+                                'navi_failed'],
             preempted_outcomes = ['preempted'],
             goal_key = 'goal_message',
             result_key = 'result_message')

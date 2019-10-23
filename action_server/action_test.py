@@ -21,8 +21,9 @@ from common_function import *
 
 def main():
     rospy.loginfo('Test ActionServer')
-    approachPersonAC()
+    #approachPersonAC()
     #findPerson()
+    openjSpeak('こんにちは')
     rospy.loginfo('Finish test')
 
 if __name__ == '__main__':
