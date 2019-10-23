@@ -20,10 +20,11 @@ from smach import StateMachine
 from smach_ros import ActionServerWrapper
 from actionlib import *
 from mimi_common_pkg.msg import *
-from std_msgs.msg import String
-#from get_distance_pcl.msg import Coordinate_xyz
+from std_msgs.msg import String, Bool
+from get_distance_pcl.msg import Coordinate_xyz
+from nav_msgs.msg import Odometry
 
-sys.path.insert(0, '/home/issei/catkin_ws/src/mimi_common_pkg/scripts/')
+sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
 from common_function import *
 from common_action_client import *
 
@@ -39,7 +40,7 @@ class FindPerson(smach.State):
     def execute(self, userdata):
         try:
             rospy.loginfo('Executing state FIND_PERSON')
-            #result = findPersonAC()
+            result = findPersonAC()
             result = 'success'
             if result == 'success':
                 #speak('I found person')
@@ -59,8 +60,11 @@ class GetCootdinate(smach.State):
                 outcomes = ['get',
                             'not_get'],
                 output_keys = ['coord_out'])
+        #Publisher
+        self.pub_coord_req = rospy.Publisher('/move_close_human/human_detect_flag', Bool, queue_size = 1) 
         #Subscriber
-        #rospy.Subscriber('get_distance_pcl/Coordinate_xyz', Coordinate_xyz, self.personCoordCB)
+        rospy.Subscriber('/get_distance_pcl/Coordinate_xyz', Coordinate_xyz, self.personCoordCB)
+        rospy.Subscriber('/odom', Odometry, self.orientationCB)
 
         self.person_coord_x = 0.00
         self.person_coord_y = 0.00
@@ -73,24 +77,27 @@ class GetCootdinate(smach.State):
         self.person_coord_y = receive_msg.world_y
         self.coordinate_flg = True
 
-    #def orientationCB(self, receive_msg):
-    #    self.person_coord_z = receive_msg.pose.pose.orientation.z
-    #    self.person_coord_w = receive_msg.pose.pose.orientation.w
+    def orientationCB(self, receive_msg):
+        self.person_coord_z = receive_msg.pose.pose.orientation.z
+        self.person_coord_w = receive_msg.pose.pose.orientation.w
 
     def execute(self, userdata):
         try:
             rospy.loginfo('Executing state GET_COORDINATE')
-            timeout = time.time() + 10
-            while not rospy.is_shutdown and self.coordinate_flg is False:
+            self.pub_coord_req.publish(True)
+            #timeout = time.time() + 10
+            while not rospy.is_shutdown and self.person_coord_x == 0.00:
                 rospy.loginfo('Waiting for coordinate')
-                if time.time() > timeout:
-                    rospy.loginfo('Time out')
+                #if time.time() > timeout:
+                #    rospy.loginfo('Time out')
                     #return 'not_get'
-                    break
+                #    break
                 rospy.sleep(1.0)
             self.coordinate_flg = False 
             self.coord_list.append(self.person_coord_x)
             self.coord_list.append(self.person_coord_y)
+            self.coord_list.append(self.person_coord_z)
+            self.coord_list.append(self.person_coord_w)
             userdata.coord_out = self.coord_list
             return 'get'
         except rospy.ROSInterruptException:
@@ -110,10 +117,16 @@ class Navigation(smach.State):
     def execute(self, userdata):
         try:
             rospy.loginfo('Executing state NAVIGATION')
+            rospy.sleep(0.1)
+            m6Control(0.3)
             ap_result = userdata.result_message
+            coord_list = userdata.coord_in
+            print coord_list
             #パラメータ変更処理書く
-            #rosparam.set_param('/move_base/DWAPlannerROS/xy_goal_tolerance', float(0.45))
-            #result = navigationAC()
+            rospy.sleep(1.0)
+            rosparam.set_param('/move_base/DWAPlannerROS/xy_goal_tolerance', str(0.45))
+            rospy.sleep(1.0)
+            result = navigationAC(coord_list)
             result = 'success'
             if result == 'success':
                 #speak('I came close to person')

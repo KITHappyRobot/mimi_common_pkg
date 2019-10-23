@@ -101,7 +101,7 @@ def navigationAC(coord_list):
         goal.target_pose.pose.position.x = coord_list[0]
         goal.target_pose.pose.position.y = coord_list[1]
         goal.target_pose.pose.orientation.z = coord_list[2]
-        goal.target_pose.pose.orientation.w = coord_list[4]
+        goal.target_pose.pose.orientation.w = coord_list[3]
         #Costmapを消去
         rospy.wait_for_service('move_base/clear_costmaps')
         clear_costmaps()
