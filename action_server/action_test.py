@@ -14,15 +14,16 @@ import time
 import rospy
 import roslib
 
-sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
+sys.path.insert(0, '/home/issei/catkin_ws/src/mimi_common_pkg/scripts/')
 from common_action_client import *
 from common_function import *
 
 
 def main():
     rospy.loginfo('Test ActionServer')
-    approachPersonAC()
+    #approachPersonAC()
     #findPerson()
+    searchLocationName('fuck')
     rospy.loginfo('Finish test')
 
 if __name__ == '__main__':

@@ -11,8 +11,6 @@
 import time
 from yaml import load
 import subprocess
-import pygame
-from mutagen.mp3 import MP3 as mp3
 import time
 #ROS関係
 import rospy
@@ -62,24 +60,17 @@ def angularControl(value):
     pub_cmd_vel_mux.publish(twist_cmd)
 
 
-#文字列をパラメータの/location_listから検索して位置座標を生成
+#文字列をパラメータの/location_dictから検索して位置座標を返す
 def searchLocationName(target_name):
     rospy.loginfo("Search LocationName")
     #LocationListのyamlファイルを読み込む
-    f = open('/home/issei/catkin_ws/src/mimi_common_pkg/config/common_function_params.yaml')
-    file_data = load(f)
+    f = open('/home/issei/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml')
+    location_dict = load(f)
     f.close()
-    print file_data
-    #検索開始
-    for i in range(len(file_data)):
-        if target_name in file_data[i][0]:
-            coordinate_list = []
-            coordinate_list.append(file_data[i][1])
-            coordinate_list.append(file_data[i][2])
-            coordinate_list.append(file_data[i][3])
-            coordinate_list.append(file_data[i][4])
-            rospy.loginfo("Created LocationData")
-            return coordinate_list
-        elif i == len(file_data):
-            rospy.loginfo("Not found <" + target_name + "> in LocationDict")
-            return 'faild'
+    if target_name in location_dict:
+        print location_dict[target_name]
+        rospy.loginfo("Retrun location_dict")
+        return location_dict[target_name]
+    else:
+        rospy.loginfo("Not found <" + target_name + "> in LocationDict")
+        return 'faild'

@@ -3,9 +3,8 @@
 #--------------------------------------------------------------------
 #Title: Locationの名前・座標をパラメータに登録するROSノード
 #Author: Issei Iida
-#Date: 2019/09/05
-#Memo: location_listは「name, position_x, position_y, orientation_z, orientationw」
-#      のlistのlist
+#Date: 2019/11/04
+#Memo: location_dictはキーが場所名、値は座標（[x,y,z,w]）
 #--------------------------------------------------------------------
 
 #ROS関係
@@ -32,7 +31,7 @@ class Waiting(smach.State):
         rospy.loginfo("Executing state: WAITING")
         while not rospy.is_shutdown() and self.location_name == 'Null':
             rospy.loginfo("Waiting for topic...")
-            rospy.sleep(1.5)
+            rospy.sleep(1.0)
         userdata.waiting_out_data = self.location_name
         self.location_name = 'Null'
         return 'set_start'
@@ -53,39 +52,11 @@ class Setting(smach.State):
         #Subscriber
         rospy.Subscriber('/odom', Odometry, self.getOdomCB)
 
-        self.location_list = []
-        self.name_list = []
+        self.location_dict = {}
         self.location_pose_x = 0.00
         self.location_pose_y = 0.00
         self.location_pose_z = 0.00
         self.location_pose_w = 0.00
-
-    def execute(self, userdata):
-        rospy.loginfo("Executing state: SETTING")
-        while not rospy.is_shutdown():
-            if userdata.setting_in_data == 'set_finish':
-                rospy.loginfo("Finish Setting")
-                userdata.setting_out_data = self.location_list
-                return 'set_finish'
-            elif userdata.setting_in_data in self.name_list:
-                rospy.loginfo("LocationName already exists")
-                return 'set_complete'
-            else:
-                rospy.loginfo("Add <" + userdata.setting_in_data + "> position")
-                second_list = []
-                second_list.append(userdata.setting_in_data)
-                self.name_list.append(userdata.setting_in_data)
-                while not rospy.is_shutdown() and self.location_pose_x == 0.00:
-                    rospy.loginfo("Waiting for Odometry...")
-                    rospy.sleep(1.0)
-                second_list.append(self.location_pose_x)
-                second_list.append(self.location_pose_y)
-                second_list.append(self.location_pose_z)
-                second_list.append(self.location_pose_w)
-                self.location_list.append(second_list)
-                rospy.loginfo("<" + userdata.setting_in_data + "> " + str(second_list))
-                second_list = []
-                return 'set_complete'
 
     def getMapCoordinateCB(self, receive_msg):
         try:
@@ -104,6 +75,29 @@ class Setting(smach.State):
         except IndexError:
             pass
 
+    def execute(self, userdata):
+        rospy.loginfo("Executing state: SETTING")
+        while not rospy.is_shutdown():
+            if userdata.setting_in_data == 'set_finish':
+                rospy.loginfo("Finish Setting")
+                userdata.setting_out_data = self.location_dict
+                return 'set_finish'
+            elif userdata.setting_in_data in self.location_dict:
+                rospy.loginfo("LocationName already exists")
+                return 'set_complete'
+            else:
+                rospy.loginfo("Add <" + userdata.setting_in_data + "> position")
+                #while not rospy.is_shutdown() and self.location_pose_x == 0.00:
+                #    rospy.loginfo("Waiting for Odometry...")
+                #    rospy.sleep(1.0)
+                self.location_dict[userdata.setting_in_data] = []
+                self.location_dict[userdata.setting_in_data].append(1)
+                self.location_dict[userdata.setting_in_data].append(2)
+                self.location_dict[userdata.setting_in_data].append(3)
+                self.location_dict[userdata.setting_in_data].append(4)
+                print self.location_dict[userdata.setting_in_data]
+                return 'set_complete'
+
 
 class Saving(smach.State):
     def __init__(self):
@@ -114,9 +108,9 @@ class Saving(smach.State):
     def execute(self, userdata):
         rospy.loginfo("Executing state: SAVING")
         while not rospy.is_shutdown():
-            rospy.loginfo("Create ROSParameter")
-            rospy.set_param('/location_list', userdata.saving_in_data)
-            rosparam.dump_params('/home/athome/catkin_ws/src/mimi_common_pkg/config/location_params.yaml', '/location_list')
+            rospy.loginfo("Create Parameter")
+            rospy.set_param('/location_dict', userdata.saving_in_data)
+            rosparam.dump_params('/home/issei/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml', '/location_dict')
             rospy.loginfo("Created!")
             return 'save_finish'
 

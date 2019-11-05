@@ -1,5 +1,6 @@
 #Difine the goal
 string data
+string pose
 ---
 #Define the result
 string data

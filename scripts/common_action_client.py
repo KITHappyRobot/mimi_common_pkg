@@ -64,6 +64,7 @@ def approachPersonAC():
     except rospy.ROSInterruptException:
         pass
 
+
 def findPersonAC():
     try: 
         rospy.loginfo('Start FindPerson')
@@ -86,6 +87,7 @@ def findPersonAC():
             return 'failed'
     except rospy.ROSInterruptException:
         pass
+
 
 def navigationAC(coord_list):
     try:
@@ -128,6 +130,5 @@ def navigationAC(coord_list):
                 rospy.loginfo('Clear Costmaps')
                 rospy.sleep(1.0)
                 count += 1
-
     except rospy.ROSInterruptException:
         pass

@@ -53,6 +53,7 @@ class FindPerson(smach.State):
         except rospy.ROSInterruptException:
             pass
 
+
 class GetCootdinate(smach.State):
     def __init__(self):
         smach.State.__init__(
@@ -90,7 +91,7 @@ class GetCootdinate(smach.State):
                 rospy.loginfo('Waiting for coordinate')
                 #if time.time() > timeout:
                 #    rospy.loginfo('Time out')
-                    #return 'not_get'
+                #    return 'not_get'
                 #    break
                 rospy.sleep(1.0)
             self.coordinate_flg = False 
