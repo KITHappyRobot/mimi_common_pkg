@@ -69,6 +69,8 @@ class GetCootdinate(smach.State):
 
         self.person_coord_x = 0.00
         self.person_coord_y = 0.00
+        self.person_coord_z = 0.00
+        self.person_coord_w = 0.00
         self.coord_list = []
         #Flag
         self.coordinate_flg = False
