@@ -87,14 +87,14 @@ class Setting(smach.State):
                 return 'set_complete'
             else:
                 rospy.loginfo("Add <" + userdata.setting_in_data + "> position")
-                #while not rospy.is_shutdown() and self.location_pose_x == 0.00:
-                #    rospy.loginfo("Waiting for Odometry...")
-                #    rospy.sleep(1.0)
+                while not rospy.is_shutdown() and self.location_pose_x == 0.00:
+                    rospy.loginfo("Waiting for Odometry...")
+                    rospy.sleep(1.0)
                 self.location_dict[userdata.setting_in_data] = []
-                self.location_dict[userdata.setting_in_data].append(1)
-                self.location_dict[userdata.setting_in_data].append(2)
-                self.location_dict[userdata.setting_in_data].append(3)
-                self.location_dict[userdata.setting_in_data].append(4)
+                self.location_dict[userdata.setting_in_data].append(self.location_pose_x)
+                self.location_dict[userdata.setting_in_data].append(self.location_pose_y)
+                self.location_dict[userdata.setting_in_data].append(self.location_pose_z)
+                self.location_dict[userdata.setting_in_data].append(self.location_pose_w)
                 print self.location_dict[userdata.setting_in_data]
                 return 'set_complete'
 
@@ -110,7 +110,7 @@ class Saving(smach.State):
         while not rospy.is_shutdown():
             rospy.loginfo("Create Parameter")
             rospy.set_param('/location_dict', userdata.saving_in_data)
-            rosparam.dump_params('/home/issei/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml', '/location_dict')
+            rosparam.dump_params('/home/athome/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml', '/location_dict')
             rospy.loginfo("Created!")
             return 'save_finish'
 
