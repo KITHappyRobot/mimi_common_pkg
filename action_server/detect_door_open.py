@@ -50,7 +50,7 @@ class DetectDoorOpenAS():
         print self.initial_distance
         rospy.sleep(0.1)
         speak("Please open the door")
-        while not rospy.is_shutdown() and self.front_laser_dist <= self.initial_distance + 0.88:#試走場のドアの幅を参考
+        while not rospy.is_shutdown() and self.front_laser_dist <= self.initial_distance + 0.88:#<--ドアの幅
             #self.feedback.data = 'waiting_door_open'
             #self.sas.publish_feedback(self.feedback)
             print self.front_laser_dist
