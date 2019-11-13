@@ -43,11 +43,13 @@ class FindPerson(smach.State):
             result = findPersonAC()
             result = 'success'
             if result == 'success':
-                #speak('I found person')
+                result = 'null'
+                speak('I found person')
                 rospy.loginfo('Find person')
                 return 'find'
             else:
-                #speak('I can`t find person')
+                result = 'null'
+                speak('I can`t find person')
                 rospy.loginfo('Not find person')
                 return 'not_find'
         except rospy.ROSInterruptException:
@@ -87,7 +89,7 @@ class GetCootdinate(smach.State):
             rospy.loginfo('Executing state GET_COORDINATE')
             self.pub_coord_req.publish(True)
             #timeout = time.time() + 10
-            while not rospy.is_shutdown and self.person_coord_x == 0.00:
+            while not rospy.is_shutdown() and self.person_coord_x == 0.00:
                 rospy.loginfo('Waiting for coordinate')
                 #if time.time() > timeout:
                 #    rospy.loginfo('Time out')
@@ -99,7 +101,9 @@ class GetCootdinate(smach.State):
             self.coord_list.append(self.person_coord_y)
             self.coord_list.append(self.person_coord_z)
             self.coord_list.append(self.person_coord_w)
+            print self.coord_list
             userdata.coord_out = self.coord_list
+            self.coord_list = []
             return 'get'
         except rospy.ROSInterruptException:
             pass
@@ -125,19 +129,22 @@ class Navigation(smach.State):
             print coord_list
             #パラメータ変更処理書く
             rospy.sleep(1.0)
-            rosparam.set_param('/move_base/DWAPlannerROS/xy_goal_tolerance', str(0.45))
+            rosparam.set_param('/move_base/DWAPlannerROS/xy_goal_tolerance', str(0.40))
             rospy.sleep(1.0)
             result = navigationAC(coord_list)
-            result = 'success'
+            print result
             if result == 'success':
-                #speak('I came close to person')
+                m6Control(0.4)
+                speak('I came close to person')
                 ap_result = result
                 userdata.result_message.data = ap_result
+                result = 'null'
                 return 'arrive'
             elif result == 'failed':
-                #speak('I can`t came close to person')
+                speak('I can`t came close to person')
                 ap_result = result
                 userdata.result_message.data = ap_result
+                result = 'null'
                 return 'not_arrive'
         except rospy.ROSInterruptException:
             pass

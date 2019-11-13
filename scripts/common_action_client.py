@@ -79,12 +79,13 @@ def findPersonAC():
 
         result = ac.get_result()
         print result
-        if result.data == 'success':
-            rospy.loginfo('Success FindPerson')
-            return 'success'
-        else:
-            rospy.loginfo('Failed FindPerson')
-            return 'failed'
+        while not rospy.is_shutdown():
+            if result.data == 'success':
+                rospy.loginfo('Success FindPerson')
+                return 'success'
+            elif result.data == 'failed':
+                rospy.loginfo('Failed FindPerson')
+                return 'failed'
     except rospy.ROSInterruptException:
         pass
 
@@ -112,23 +113,25 @@ def navigationAC(coord_list):
         ac.send_goal(goal)
         state = ac.get_state()
         count = 0#<---clear_costmapsの実行回数をカウントするための変数
-        if state == 1:
-            rospy.loginfo('Got out of the obstacle')
-            rospy.sleep(1.0)
-        elif state == 3:
-            rospy.loginfo('Navigation success!!')
-            return 'success'
-            state = 0
-        elif state == 4:
-            if count == 10:
-                count = 0
-                rospy.loginfo('Navigation Failed')
-                return 'failed'
-            else:
-                rospy.loginfo('Buried in obstacle')
-                self.clear_costmaps()
-                rospy.loginfo('Clear Costmaps')
+        while not rospy.is_shutdown():
+            state = ac.get_state()
+            if state == 1:
+                rospy.loginfo('Got out of the obstacle')
                 rospy.sleep(1.0)
-                count += 1
+            elif state == 3:
+                rospy.loginfo('Navigation success!!')
+                return 'success'
+                state = 0
+            elif state == 4:
+                if count == 10:
+                    count = 0
+                    rospy.loginfo('Navigation Failed')
+                    return 'failed'
+                else:
+                    rospy.loginfo('Buried in obstacle')
+                    self.clear_costmaps()
+                    rospy.loginfo('Clear Costmaps')
+                    rospy.sleep(1.0)
+                    count += 1
     except rospy.ROSInterruptException:
         pass

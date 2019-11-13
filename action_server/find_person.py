@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #---------------------------------------------------------------------
 #Title: 人を探すためのActionServer
@@ -9,6 +9,7 @@
 
 #Python関連ライブラリ
 import sys
+import time
 #ROS関連ライブラリ
 import rospy
 import roslib
@@ -42,7 +43,6 @@ class Find(smach.State):
     def recogCB(self, receive_msg):
         obj = receive_msg.data
         obj_list = obj.split(" ")
-        rospy.sleep(0.1)
         for i in range(len(obj_list)):
             if obj_list[i] == 'person':
                 self.person_flg = True
@@ -51,22 +51,28 @@ class Find(smach.State):
         try:
             rospy.loginfo('Executing state FIND')
             result = userdata.result_in
+            print result
             m6Control(-0.2)
-            while self.person_flg == False:
-                angularControl(0.4)
+            timeout = time.time() + 30
+            while not rospy.is_shutdown() and self.person_flg == False:
+                angularControl(0.3)
                 rospy.loginfo('Finding...')
-                rospy.sleep(0.5)
+                rospy.sleep(0.3)
+                if time.time() > timeout:
+                    rospy.loginfo('**Time out!**')
+                    break
             angularControl(0.0)
             if self.person_flg == True:
                 self.person_flg = False
                 result.data = 'success'
                 userdata.result_out = result
+                result = 'null'
                 return 'find'
-            else:
+            elif self.person_flg == False:
                 result.data = 'failure'
                 userdata.result_out = result
                 return 'not_find'
-        except rospy.ROSInterruptExection:
+        except rospy.ROSInterruptException:
             pass
 
 def main():
