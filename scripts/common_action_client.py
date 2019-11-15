@@ -32,9 +32,11 @@ def detectDoorOpenAC():
         result = ac.get_result()
         if result.data == 'success':
             rospy.loginfo("Success DetectDoorOpen")
+            ac.cancel_goal()
             return 'success'
         else:
             rospy.loginfo("Failed DetectDoorOpen")
+            ac.cancel_goal()
             return 'failed'
     except rospy.ROSInterruptException:
         pass
@@ -82,6 +84,7 @@ def findPersonAC():
         while not rospy.is_shutdown():
             if result.data == 'success':
                 rospy.loginfo('Success FindPerson')
+                ac.set_premmpted()
                 return 'success'
             elif result.data == 'failed':
                 rospy.loginfo('Failed FindPerson')
