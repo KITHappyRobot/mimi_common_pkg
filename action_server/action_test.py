@@ -21,8 +21,8 @@ from common_function import *
 
 def main():
     rospy.loginfo('Test ActionServer')
-    approachPersonAC()
-    #findPersonAC()
+    #approachPersonAC()
+    findPersonAC()
     rospy.loginfo('Finish test')
 
 if __name__ == '__main__':

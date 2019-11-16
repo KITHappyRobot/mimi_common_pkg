@@ -39,6 +39,7 @@ class Find(smach.State):
         rospy.Subscriber('/recog_obj', String, self.recogCB)
         #Flag
         self.person_flg = False
+        self.kc = KobukiControl()
 
     def recogCB(self, receive_msg):
         obj = receive_msg.data
@@ -57,7 +58,8 @@ class Find(smach.State):
             timeout = time.time() + 30
             self.person_flg = False
             while not rospy.is_shutdown() and self.person_flg == False:
-                angularControl(0.3)
+                self.kc.publishTwist('angular', 0.3)
+                #angularControl(0.3)
                 rospy.loginfo('Finding...')
                 rospy.sleep(0.3)
                 if time.time() > timeout:

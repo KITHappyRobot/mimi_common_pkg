@@ -24,7 +24,6 @@ from geometry_msgs.msg import Twist
 
 #Grobal
 pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
-pub_cmd_vel_mux = rospy.Publisher('cmd_vel_mux/input/teleop', Twist, queue_size = 1)
 pub_m6 = rospy.Publisher('/m6_controller/command', Float64, queue_size = 1)
 
 
@@ -44,20 +43,23 @@ def m6Control(value):
     rospy.loginfo("Changing m6 pose")
 
 
-#kobukiの前進・後進
-def linearControl(value):
-    twist_cmd = Twist()
-    twist_cmd.linear.x = value
-    rospy.sleep(0.1)
-    pub_cmd_vel_mux.publish(twist_cmd)
+class KobukiControl():
+    def __init__(self):
+        #Publisher
+        self.pub_cmd_vel_mux = rospy.Publisher('cmd_vel_mux/input/teleop', Twist, queue_size = 1)
 
+        self.twist_value = Twist()
 
-#kobukiの回転
-def angularControl(value):
-    twist_cmd = Twist()
-    twist_cmd.angular.z = value
-    rospy.sleep(0.1)
-    pub_cmd_vel_mux.publish(twist_cmd)
+    def publishTwist(self, target, value):
+        try:
+            if target is 'linear':
+                self.twist_value.linear.x = value
+            elif target is 'angular':
+                self.twist_value.angular.z = value
+            rospy.sleep(0.1)
+            self.pub_cmd_vel_mux.publish(self.twist_value)
+        except rospy.ROSInterruptException:
+            pass
 
 
 #文字列をパラメータの/location_dictから検索して位置座標を返す
