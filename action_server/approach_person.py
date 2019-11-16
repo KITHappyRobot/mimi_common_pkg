@@ -131,7 +131,8 @@ class Navigation(smach.State):
             print coord_list
             #パラメータ変更処理書く
             rospy.sleep(1.0)
-            rosparam.set_param('/move_base/DWAPlannerROS/xy_goal_tolerance', str(0.45))
+            rosparam.set_param('/move_base/DWAPlannerROS/xy_goal_tolerance', str(0.7))
+            print rosparam.get_param('/move_base/DWAPlannerROS/xy_goal_tolerance')
             rospy.sleep(1.0)
             result = navigationAC(coord_list)
             print result

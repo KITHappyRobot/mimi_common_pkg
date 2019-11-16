@@ -84,7 +84,7 @@ def findPersonAC():
         while not rospy.is_shutdown():
             if result.data == 'success':
                 rospy.loginfo('Success FindPerson')
-                ac.set_premmpted()
+                ac.cancel_goal()
                 return 'success'
             elif result.data == 'failed':
                 rospy.loginfo('Failed FindPerson')
@@ -126,14 +126,16 @@ def navigationAC(coord_list):
                 return 'success'
                 state = 0
             elif state == 4:
-                if count == 10:
+                if count == 100:
                     count = 0
                     rospy.loginfo('Navigation Failed')
                     return 'failed'
                 else:
                     rospy.loginfo('Buried in obstacle')
-                    self.clear_costmaps()
+                    clear_costmaps()
                     rospy.loginfo('Clear Costmaps')
+                    ac.send_goal(goal)
+                    rospy.loginfo('Send Goal')
                     rospy.sleep(1.0)
                     count += 1
     except rospy.ROSInterruptException:

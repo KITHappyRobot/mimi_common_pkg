@@ -51,22 +51,26 @@ class Find(smach.State):
         try:
             rospy.loginfo('Executing state FIND')
             result = userdata.result_in
+            result.data = 'failure'
             print result
             m6Control(-0.2)
             timeout = time.time() + 30
+            self.person_flg = False
             while not rospy.is_shutdown() and self.person_flg == False:
                 angularControl(0.3)
                 rospy.loginfo('Finding...')
                 rospy.sleep(0.3)
                 if time.time() > timeout:
                     rospy.loginfo('**Time out!**')
+                    timeout = 0
                     break
             angularControl(0.0)
             if self.person_flg == True:
                 self.person_flg = False
+                m6Control(0.3)
+                rospy.sleep(0.1)
                 result.data = 'success'
                 userdata.result_out = result
-                result = 'null'
                 return 'find'
             elif self.person_flg == False:
                 result.data = 'failure'
