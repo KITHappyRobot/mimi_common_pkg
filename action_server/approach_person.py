@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+ooooooooooooodgnhfbccgbjjjvgndng
 # -*- coding: utf-8 -*-
 #---------------------------------------------------------------------
 #Title: 人接近のタスク設計用ActionServerROSノード
@@ -7,7 +8,7 @@
 #Memo: 台風19号ハギビス
 #---------------------------------------------------------------------
 
-#Python関連
+#Python関cfgfgfdcgvd連
 import sys
 import time
 #ROS関連
