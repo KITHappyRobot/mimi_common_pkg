@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-ooooooooooooodgnhfbccgbjjjvgndng
 # -*- coding: utf-8 -*-
 #---------------------------------------------------------------------
 #Title: 人接近のタスク設計用ActionServerROSノード
@@ -8,10 +7,10 @@ ooooooooooooodgnhfbccgbjjjvgndng
 #Memo: 台風19号ハギビス
 #---------------------------------------------------------------------
 
-#Python関cfgfgfdcgvd連
+#Python関系
 import sys
 import time
-#ROS関連
+#ROS関系
 import rospy
 import rosparam
 import roslib
@@ -44,14 +43,12 @@ class FindPerson(smach.State):
             result = findPersonAC()
             result = 'success'
             if result == 'success':
-                result = 'null'
                 speak('I found person')
-                rospy.loginfo('Find person')
+                rospy.loginfo('Find Succes')
                 return 'find'
             else:
-                result = 'null'
                 speak('I can`t find person')
-                rospy.loginfo('Not find person')
+                rospy.loginfo('Find Failed')
                 return 'not_find'
         except rospy.ROSInterruptException:
             pass
@@ -75,13 +72,10 @@ class GetCootdinate(smach.State):
         self.person_coord_z = 0.00
         self.person_coord_w = 0.00
         self.coord_list = []
-        #Flag
-        self.coordinate_flg = False
 
     def personCoordCB(self, receive_msg):
         self.person_coord_x = receive_msg.world_x
         self.person_coord_y = receive_msg.world_y
-        self.coordinate_flg = True
 
     def orientationCB(self, receive_msg):
         self.person_coord_z = receive_msg.pose.pose.orientation.z
@@ -99,14 +93,13 @@ class GetCootdinate(smach.State):
                 #    return 'not_get'
                 #    break
                 rospy.sleep(1.0)
-            self.coordinate_flg = False 
+            rospy.loginfo('Got Coordinate')
             self.coord_list.append(self.person_coord_x)
             self.coord_list.append(self.person_coord_y)
             self.coord_list.append(self.person_coord_z)
             self.coord_list.append(self.person_coord_w)
             print self.coord_list
             userdata.coord_out = self.coord_list
-            self.coord_list = []
             return 'get'
         except rospy.ROSInterruptException:
             pass
@@ -122,33 +115,31 @@ class Navigation(smach.State):
                               'coord_in'],
                 output_keys = ['result_message'])
 
+        self.result = 'null'
+
     def execute(self, userdata):
         try:
             rospy.loginfo('Executing state NAVIGATION')
-            rospy.sleep(0.1)
-            m6Control(0.3)
             ap_result = userdata.result_message
             coord_list = userdata.coord_in
-            print coord_list
-            #パラメータ変更処理書く
-            rospy.sleep(1.0)
-            rosparam.set_param('/move_base/DWAPlannerROS/xy_goal_tolerance', str(0.7))
+            m6Control(0.3)
+            rosparam.set_param('/move_base/DWAPlannerROS/xy_goal_tolerance', str(0.5))
             print rosparam.get_param('/move_base/DWAPlannerROS/xy_goal_tolerance')
-            rospy.sleep(1.0)
+            rospy.sleep(0.1)
             result = navigationAC(coord_list)
             print result
-            if result == 'success':
+            if self.result == 'success':
                 m6Control(0.4)
                 speak('I came close to person')
-                ap_result = result
-                userdata.result_message.data = ap_result
-                result = 'null'
+                #ap_result = result
+                #userdata.result_message.data = ap_result
+                userdata.result_message.data = self.result
                 return 'arrive'
-            elif result == 'failed':
+            elif self.result == 'failed':
                 speak('I can`t came close to person')
-                ap_result = result
-                userdata.result_message.data = ap_result
-                result = 'null'
+                #ap_result = result
+                #userdata.result_message.data = ap_result
+                userdata.result_message.data = self.result
                 return 'not_arrive'
         except rospy.ROSInterruptException:
             pass

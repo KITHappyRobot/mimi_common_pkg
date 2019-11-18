@@ -12,9 +12,9 @@
 import sys
 #ROS関係
 import rospy
-import roslib
 import actionlib
 from std_msgs.msg import String
+from sensor_msgs.msg import LaserScan
 from mimi_common_pkg.msg import (DetectDoorOpenAction,
                                  DetectDoorOpenResult,
                                  DetectDoorOpenFeedback) 

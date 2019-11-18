@@ -4,7 +4,7 @@
 #Title: 人を探すためのActionServer
 #Author: Issei Iida
 #Date: 2019/10/11
-#Memo: 人を見つけたら、その方向を向く仕様
+#Memo: 人を見つけるまで回転する仕様
 #---------------------------------------------------------------------
 
 #Python関連ライブラリ
@@ -36,47 +36,62 @@ class Find(smach.State):
                 input_keys = ['result_in'],
                 output_keys = ['result_out'])
         #Subscriber
-        rospy.Subscriber('/recog_obj', String, self.recogCB)
+        rospy.Subscriber('/recog_obj', String, self.detectPerson)
         #Flag
         self.person_flg = False
         self.kc = KobukiControl()
 
-    def recogCB(self, receive_msg):
-        obj = receive_msg.data
-        obj_list = obj.split(" ")
-        for i in range(len(obj_list)):
-            if obj_list[i] == 'person':
-                self.person_flg = True
+    #def recogCB(self, receive_msg):
+    #    #obj = receive_msg.data
+    #    #obj_list = obj.split(" ")
+    #    obj_list = receive_msg.data.split(" ")
+    #    for i in range(len(obj_list)):
+    #        if obj_list[i] == 'person':
+    #            self.person_flg = True
+    #        else:
+    #            self.person_flg = False
+
+    def detectPerson(self, topic_msg):
+        try:
+            self.obj_list = topic_msg.data.split(" ")
+            for i in range(len(self.obj_list)):
+                if 'person' in self.obj_list:
+                    self.person_flg = True
+                    break
+                else:
+                    pass
+        except rospy.ROSInterruptException:
+            pass
 
     def execute(self, userdata):
         try:
             rospy.loginfo('Executing state FIND')
-            result = userdata.result_in
-            result.data = 'failure'
+            #result = userdata.result_in
+            #result.data = 'failure'
             print result
             m6Control(-0.2)
             timeout = time.time() + 30
             self.person_flg = False
             while not rospy.is_shutdown() and self.person_flg == False:
-                self.kc.publishTwist('angular', 0.3)
-                #angularControl(0.3)
+                self.kc.angularControl(0.3)
+                self.detectPerson()
                 rospy.loginfo('Finding...')
-                rospy.sleep(0.3)
-                if time.time() > timeout:
-                    rospy.loginfo('**Time out!**')
-                    timeout = 0
-                    break
+                rospy.sleep(0.5)
+                #if time.time() > timeout:
+                #    rospy.loginfo('**Time out!**')
+                #    timeout = 0
+                #    break
             angularControl(0.0)
             if self.person_flg == True:
-                self.person_flg = False
                 m6Control(0.3)
-                rospy.sleep(0.1)
-                result.data = 'success'
-                userdata.result_out = result
+                #result.data = 'success'
+                result = 'success'
+                userdata.result_out.data = result
                 return 'find'
             elif self.person_flg == False:
-                result.data = 'failure'
-                userdata.result_out = result
+                #result.data = 'failure'
+                result = 'failure'
+                userdata.result_out.data = result
                 return 'not_find'
         except rospy.ROSInterruptException:
             pass
