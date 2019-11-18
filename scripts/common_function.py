@@ -43,7 +43,7 @@ def m6Control(value):
     rospy.loginfo("Changing m6 pose")
 
 
-#kobukiの前後進・回転の制御
+#kobukiの制御
 class KobukiControl():
     def __init__(self):
         #Publisher
@@ -51,6 +51,7 @@ class KobukiControl():
 
         self.twist_value = Twist()
 
+    #ただ前進
     def linearControl(self, value):
         try:
             self.twist_value.linear.x = value
@@ -60,11 +61,32 @@ class KobukiControl():
             rospy.loginfo('**Interrupted++')
             pass
 
+    #ただ回転
     def angularControl(self, value):
         try:
             self.twist_value.angular.z = value
             rospy.sleep(0.1)
             self.pub_cmd_vel_mux.publish(self.twist_value)
+        except rospy.ROSInterruptException:
+            rospy.loginfo('**Interrupted**')
+            pass
+
+    #指定した距離だけ前後移動
+    def moveDistance(self, direction,  distance):
+        try:
+            target_time = distance / 0.2
+            print target_time
+            if direction is 'forward':
+                self.twist_value.linear.x = 0.2
+            elif direction is 'back':
+                self.twist_value.linear.x = -0.2
+            start_time = time.time()
+            end_time = time.time()
+            rate = rospy.Rate(30)
+            while end_time - start_time <= target_time:
+                self.pub_cmd_vel_mux.publish(self.twist_value)
+                end_time = time.time()
+                rate.sleep()
         except rospy.ROSInterruptException:
             rospy.loginfo('**Interrupted**')
             pass

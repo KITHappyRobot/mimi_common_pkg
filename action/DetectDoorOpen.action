@@ -1,8 +1,8 @@
 #Difine the goal
-string data
+int 
 ---
 #Difine the result
-string data
+string state
 ---
 #Difine the a feedback message
-string data
+string state

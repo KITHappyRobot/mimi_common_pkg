@@ -18,11 +18,13 @@ sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
 from common_action_client import *
 from common_function import *
 
-
+kc = KobukiControl()
 def main():
     rospy.loginfo('Test ActionServer')
     #approachPersonAC()
-    findPersonAC()
+    #findPersonAC()
+    
+    kc.moveDistance('forwerd', 1.0)
     rospy.loginfo('Finish test')
 
 if __name__ == '__main__':
