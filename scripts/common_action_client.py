@@ -9,9 +9,7 @@
 
 #ROS関係
 import rospy
-import roslib
 import actionlib
-from std_msgs.msg import String
 from std_srvs.srv import Empty
 from mimi_common_pkg.msg import *
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
