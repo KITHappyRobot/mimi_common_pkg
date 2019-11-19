@@ -13,20 +13,19 @@ import time
 #ROS関系
 import rospy
 import rosparam
-import roslib
-import smach
-import smach_ros
-from smach import StateMachine
-from smach_ros import ActionServerWrapper
 from actionlib import *
 from mimi_common_pkg.msg import *
+from nav_msgs.msg import Odometry
 from std_msgs.msg import String, Bool
 from get_distance_pcl.msg import Coordinate_xyz
-from nav_msgs.msg import Odometry
+from smach_ros import ActionServerWrapper
+from smach import StateMachine
+import smach_ros
+import smach
 
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
-from common_function import *
 from common_action_client import *
+from common_function import *
 
 
 class FindPerson(smach.State):
@@ -85,13 +84,8 @@ class GetCootdinate(smach.State):
         try:
             rospy.loginfo('Executing state GET_COORDINATE')
             self.pub_coord_req.publish(True)
-            #timeout = time.time() + 10
             while not rospy.is_shutdown() and self.person_coord_x == 0.00:
                 rospy.loginfo('Waiting for coordinate')
-                #if time.time() > timeout:
-                #    rospy.loginfo('Time out')
-                #    return 'not_get'
-                #    break
                 rospy.sleep(1.0)
             rospy.loginfo('Got Coordinate')
             self.coord_list.append(self.person_coord_x)

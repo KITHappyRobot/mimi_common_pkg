@@ -12,15 +12,15 @@ import sys
 import time
 #ROS関連ライブラリ
 import rospy
-import smach
-from smach import StateMachine
-from smach_ros import ActionServerWrapper
 import actionlib
 from std_msgs.msg import String
 from mimi_common_pkg.msg import (FindPersonAction,
                                  FindPersonGoal,
                                  FindPersonFeedback,
                                  FindPersonResult) 
+from smach_ros import ActionServerWrapper
+from smach import StateMachine
+import smach
 
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
 from common_function import KobukiControl

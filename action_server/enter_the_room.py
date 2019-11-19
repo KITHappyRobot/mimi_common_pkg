@@ -12,10 +12,10 @@ import sys
 #ROS関係
 import rospy
 import actionlib
-from std_msgs.msg import String
-from sensor_msgs.msg import LaserScan
 from mimi_common_pkg.msg import (EnterTheRoomAction,
                                  EnterTheRoomResult)
+from sensor_msgs.msg import LaserScan
+from std_msgs.msg import String
 
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
 from common_function import KobukiControl, speak
@@ -44,21 +44,19 @@ class EnterTheRoomAS():
     def detection(self, receive_msg):
         #0.05とは2dLidarからkobukiの中心までの距離
         target_distance = self.front_laser_dist + receive_msg - 0.05
-        print target_distance
-        rospy.loginfo('Start detection')
         speak("Please open the door")
+        rospy.loginfo('Start detection')
         while self.front_laser_dist <= target_distance:
             rospy.loginfo('Waiting for the door to open')
             rospy.sleep(1.0)
-        rospy.loginfo('Door opened!')
+        rospy.loginfo('Door opened')
         return target_distance
 
     def execute(self, goal):
         rospy.loginfo('Start EnterTheRoom')
         distance = self.detection(goal.distance)
-        speak("Thank you")
+        speak('Thank you')
         self.kc.moveDistance(distance)
-        rospy.loginfo('Entered the room')
         self.result.data = 'success'
         self.sas.set_succeeded(self.result)
         rospy.loginfo('Finish EnterTheRoom')
