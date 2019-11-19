@@ -23,7 +23,7 @@ from mimi_common_pkg.msg import (FindPersonAction,
                                  FindPersonResult) 
 
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
-from common_function import *
+from common_function import KobukiControl
 
 
 class Find(smach.State):

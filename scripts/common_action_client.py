@@ -15,25 +15,25 @@ from mimi_common_pkg.msg import *
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
 
-def detectDoorOpenAC():
+def enterTheRoomAC(receive_msg):
     try:
-        rospy.loginfo("Start DetectDoorOpen")
-        ac = actionlib.SimpleActionClient('detect_door_open', DetectDoorOpenAction)
+        rospy.loginfo("Start EnterTheRoom")
+        ac = actionlib.SimpleActionClient('enter_the_room', EnterTheRoomAction)
         ac.wait_for_server()
 
-        goal = DetectDoorOpenGoal()
-        goal.data = 'start'
+        goal = EnterTheRoomGoal()
+        goal.distance = receive_msg
 
         ac.send_goal(goal)
         ac.wait_for_result()
     
         result = ac.get_result()
-        if result.data == 'success':
-            rospy.loginfo("Success DetectDoorOpen")
+        if result == 'success':
+            rospy.loginfo("Success EnterTheRoom")
             ac.cancel_goal()
             return 'success'
         else:
-            rospy.loginfo("Failed DetectDoorOpen")
+            rospy.loginfo("Failed EnterTheRoom")
             ac.cancel_goal()
             return 'failed'
     except rospy.ROSInterruptException:
@@ -55,9 +55,11 @@ def approachPersonAC():
         print result
         if result.data == 'success':
             rospy.loginfo("Success ApproachPerson")
+            ac.cancel_goal()
             return 'success'
         elif result.data == 'aborted':
             rospy.loginfo("Aborted ApproachPerson")
+            ac.cancel_goal()
             return 'aborted'
         else:
             return 'failed'
@@ -86,6 +88,7 @@ def findPersonAC():
                 return 'success'
             elif result.data == 'failed':
                 rospy.loginfo('Failed FindPerson')
+                ac.cancel_goal()
                 return 'failed'
     except rospy.ROSInterruptException:
         pass
@@ -118,23 +121,24 @@ def navigationAC(coord_list):
             state = ac.get_state()
             if state == 1:
                 rospy.loginfo('Got out of the obstacle')
-                rospy.sleep(1.0)
+                rospy.sleep(2.0)
             elif state == 3:
                 rospy.loginfo('Navigation success!!')
+                ac.cancel_goal()
                 return 'success'
                 state = 0
             elif state == 4:
                 if count == 100:
                     count = 0
                     rospy.loginfo('Navigation Failed')
+                    ac.cancel_goal()
                     return 'failed'
                 else:
-                    rospy.loginfo('Buried in obstacle')
-                    clear_costmaps()
                     rospy.loginfo('Clear Costmaps')
+                    clear_costmaps()
                     ac.send_goal(goal)
                     rospy.loginfo('Send Goal')
-                    rospy.sleep(1.0)
+                    rospy.sleep(2.0)
                     count += 1
     except rospy.ROSInterruptException:
         pass

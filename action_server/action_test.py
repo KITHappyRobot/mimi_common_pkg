@@ -23,8 +23,7 @@ def main():
     rospy.loginfo('Test ActionServer')
     #approachPersonAC()
     #findPersonAC()
-    
-    kc.moveDistance('forwerd', 1.0)
+    enterTheRoomAC(0.88)
     rospy.loginfo('Finish test')
 
 if __name__ == '__main__':
