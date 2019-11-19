@@ -28,7 +28,7 @@ def enterTheRoomAC(receive_msg):
         ac.wait_for_result()
     
         result = ac.get_result()
-        if result == 'success':
+        if result.data == 'success':
             rospy.loginfo("Success EnterTheRoom")
             ac.cancel_goal()
             return 'success'

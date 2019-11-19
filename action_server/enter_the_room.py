@@ -32,6 +32,7 @@ class EnterTheRoomAS():
                 execute_cb = self.execute,
                 auto_start = False)
 
+        self.kc = KobukiControl()
         self.result = EnterTheRoomResult()
         self.front_laser_dist = 999.9
 
@@ -41,7 +42,9 @@ class EnterTheRoomAS():
         self.front_laser_dist = receive_msg.ranges[359]
 
     def detection(self, receive_msg):
-        target_distance = self.front_laser_dist + receive_msg
+        #0.05とは2dLidarからkobukiの中心までの距離
+        target_distance = self.front_laser_dist + receive_msg - 0.05
+        print target_distance
         rospy.loginfo('Start detection')
         speak("Please open the door")
         while self.front_laser_dist <= target_distance:
@@ -52,9 +55,9 @@ class EnterTheRoomAS():
 
     def execute(self, goal):
         rospy.loginfo('Start EnterTheRoom')
-        distance = self.detection(goal.data)
+        distance = self.detection(goal.distance)
         speak("Thank you")
-        kc.moveDistance(distance)
+        self.kc.moveDistance(distance)
         rospy.loginfo('Entered the room')
         self.result.data = 'success'
         self.sas.set_succeeded(self.result)

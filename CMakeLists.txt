@@ -70,7 +70,7 @@ add_action_files(
     DIRECTORY
     action
     FILES
-    DetectDoorOpen.action
+    EnterTheRoom.action
     ApproachPerson.action
     FindPerson.action
     )

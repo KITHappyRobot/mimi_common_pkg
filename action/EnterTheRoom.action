@@ -1,8 +1,8 @@
 #Difine the goal
-float distance
+float32 distance
 ---
-#Difine the result
-bool 
+#Difine the results
+string data
 ---
 #Difine the a feedback message
-int state
+int8 state

@@ -76,7 +76,7 @@ class KobukiControl():
         try:
             #absは絶対値求める関数
             target_time = abs(distance / 0.2)
-            print target_time
+            print 'time' + str(target_time)
             if distance >0:
                 self.twist_value.linear.x = 0.24
             elif distance < 0:
