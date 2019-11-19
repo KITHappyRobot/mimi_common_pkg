@@ -72,14 +72,15 @@ class KobukiControl():
             pass
 
     #指定した距離だけ前後移動
-    def moveDistance(self, direction,  distance):
+    def moveDistance(self, distance):
         try:
-            target_time = distance / 0.2
+            #absは絶対値求める関数
+            target_time = abs(distance / 0.2)
             print target_time
-            if direction is 'forward':
-                self.twist_value.linear.x = 0.2
-            elif direction is 'back':
-                self.twist_value.linear.x = -0.2
+            if distance >0:
+                self.twist_value.linear.x = 0.24
+            elif distance < 0:
+                self.twist_value.linear.x = -0.24
             start_time = time.time()
             end_time = time.time()
             rate = rospy.Rate(30)
