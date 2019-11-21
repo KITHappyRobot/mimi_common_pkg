@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #---------------------------------------------------------------------
-# Title: 人がいる方向を向く処理を書いたActionServer
+# Title: 人がいる方向を向くためのActionServer
 # Author: Issei Iida
 # Date: 2019/11/21
 # Memo:
@@ -12,9 +12,9 @@ import sys
 import time
 #ROS関係
 import rospy
-import actionlib
-from mimi_common_pkg.msg import FacePersonAction
 from std_msgs.msg import String
+from mimi_common_pkg.msg import FacePersonAction, FacePersonResult
+import actionlib
 
 sys.path.insert(0, '/home/issei/catkin_ws/src/mimi_common_pkg/scripts')
 from common_function import KobukiControl, m6Control
