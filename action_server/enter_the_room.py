@@ -42,7 +42,7 @@ class EnterTheRoomAS():
         self.front_laser_dist = receive_msg.ranges[359]
 
     def detection(self, receive_msg):
-        #0.05とは2dLidarからkobukiの中心までの距離
+        #-0.05は固定データ
         target_distance = self.front_laser_dist + receive_msg - 0.05
         speak("Please open the door")
         rospy.loginfo('Start detection')

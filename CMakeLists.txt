@@ -73,6 +73,7 @@ add_action_files(
     EnterTheRoom.action
     ApproachPerson.action
     FindPerson.action
+    FacePerson.action
     )
 
 ## Generate added messages and services with any dependencies listed here

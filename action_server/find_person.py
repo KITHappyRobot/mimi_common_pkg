@@ -110,5 +110,5 @@ if __name__ == '__main__':
     try:
         rospy.init_node('find_person', anonymous = True)
         main()
-    except rospy.ROSInterruptExection:
+    except rospy.ROSInterruptException:
         pass
