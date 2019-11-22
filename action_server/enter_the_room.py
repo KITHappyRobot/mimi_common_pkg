@@ -1,10 +1,10 @@
 #!/usr/bin/env python 
 # -*- coding: utf-8 -*-
 #--------------------------------------------------------------------
-#Title: ドアが開いたことを検出して入室するActionServer
-#Author: Issei Iida
-#Date: 2019/11/19
-#Memo: ドアが閉まっていることを前提条件とする
+# Title: ドアが開いたことを検出して入室するActionServer
+# Author: Issei Iida
+# Date: 2019/11/19
+# Memo: ドアが閉まっていることを前提条件とする
 #--------------------------------------------------------------------
 
 #Python関係
@@ -12,8 +12,7 @@ import sys
 #ROS関係
 import rospy
 import actionlib
-from mimi_common_pkg.msg import (EnterTheRoomAction,
-                                 EnterTheRoomResult)
+from mimi_common_pkg.msg import EnterTheRoomAction, EnterTheRoomResult
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import String
 
@@ -53,13 +52,18 @@ class EnterTheRoomAS():
         return target_distance
 
     def execute(self, goal):
-        rospy.loginfo('Start EnterTheRoom')
-        distance = self.detection(goal.distance)
-        speak('Thank you')
-        self.kc.moveDistance(distance)
-        self.result.data = 'success'
-        self.sas.set_succeeded(self.result)
-        rospy.loginfo('Finish EnterTheRoom')
+        try:
+            rospy.loginfo('Start EnterTheRoom')
+            distance = self.detection(goal.distance)
+            speak('Thank you')
+            self.kc.moveDistance(distance)
+            self.result.data = 'success'
+            self.sas.set_succeeded(self.result)
+            rospy.loginfo('Finish EnterTheRoom')
+        except rospy.ROSInterruptException:
+            rospy.loginfo('**Interrupted**')
+            pass
+
 
 if __name__ == '__main__':
     try:
@@ -67,4 +71,5 @@ if __name__ == '__main__':
         ddo_server = EnterTheRoomAS()
         rospy.spin()
     except rospy.ROSInterruptException:
+        rospy.loginfo('**Interrupted**')
         pass

@@ -20,8 +20,6 @@ sys.path.insert(0, '/home/issei/catkin_ws/src/mimi_common_pkg/scripts')
 from common_function import KobukiControl, m6Control
 
 
-
-
 class FacePersonAS():
     def __init__(self):
         #ActionServer

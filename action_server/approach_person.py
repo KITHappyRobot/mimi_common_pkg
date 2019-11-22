@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #---------------------------------------------------------------------
-#Title: 人接近のタスク設計用ActionServerROSノード
-#Author: Issei Iida
-#Date: 2019/10/13
-#Memo: 台風19号ハギビス
+# Title: 人接近を行うActionServer
+# Author: Issei Iida
+# Date: 2019/10/13
+# Memo: 台風19号ハギビス
 #---------------------------------------------------------------------
 
 #Python関系
@@ -50,6 +50,7 @@ class FindPerson(smach.State):
                 rospy.loginfo('Find Failed')
                 return 'not_find'
         except rospy.ROSInterruptException:
+            rospy.loginfo('**Interrupted**')
             pass
 
 
@@ -96,6 +97,7 @@ class GetCootdinate(smach.State):
             userdata.coord_out = self.coord_list
             return 'get'
         except rospy.ROSInterruptException:
+            rospy.loginfo('**Interrupted**')
             pass
 
 
@@ -136,6 +138,7 @@ class Navigation(smach.State):
                 userdata.result_message.data = self.result
                 return 'not_arrive'
         except rospy.ROSInterruptException:
+            rospy.loginfo('**Interrupted**')
             pass
 
 
@@ -194,4 +197,5 @@ if __name__ == '__main__':
         rospy.init_node('approach_person', anonymous = True)
         main()
     except rospy.ROSInterruptException:
+        rospy.loginfo('**Interrupted**')
         pass

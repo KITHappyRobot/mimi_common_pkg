@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #--------------------------------------------------------------------
-#Title: ActionClientを纏めたPythonスクリプト
-#Author: Issei Iida
-#Date: 2019/09/18
-#Memo: 
+# Title: ActionClientを纏めたPythonスクリプト
+# Author: Issei Iida
+# Date: 2019/09/18
+# Memo: 
 #--------------------------------------------------------------------
 
 #ROS関係
 import rospy
 import actionlib
 from std_srvs.srv import Empty
-from mimi_common_pkg.msg import *
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from mimi_common_pkg.msg import *
 
 
 def enterTheRoomAC(receive_msg):

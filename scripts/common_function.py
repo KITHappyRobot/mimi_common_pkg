@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #--------------------------------------------------------------------
-#Title: 使用頻度が高い機能を纏めたPythonスクリプト
-#Author: Issei Iida
-#Date: 2019/09/07
-#Memo: mimiの上(頭)から下(台車)の順に記述
+# Title: 使用頻度が高い処理を纏めたPythonスクリプト
+# Author: Issei Iida
+# Date: 2019/09/07
+# Memo: mimiの上(頭)から下(台車)の順に記述
 #--------------------------------------------------------------------
 
 #Python関係
 import time
 from yaml import load
 import subprocess
-import time
 #ROS関係
 import rospy
 import rosparam
@@ -53,37 +52,28 @@ class KobukiControl():
 
     #ただ前進
     def linearControl(self, value):
-        try:
-            self.twist_value.linear.x = value
-            rospy.sleep(0.1)
-            self.pub_cmd_vel_mux.publish(self.twist_value)
-        except rospy.ROSInterruptException:
-            rospy.loginfo('**Interrupted++')
-            pass
+        self.twist_value.linear.x = value
+        rospy.sleep(0.1)
+        self.pub_cmd_vel_mux.publish(self.twist_value)
 
     #ただ回転
     def angularControl(self, value):
-        try:
-            self.twist_value.angular.z = value
-            rospy.sleep(0.1)
-            self.pub_cmd_vel_mux.publish(self.twist_value)
-        except rospy.ROSInterruptException:
-            rospy.loginfo('**Interrupted**')
-            pass
+        self.twist_value.angular.z = value
+        rospy.sleep(0.1)
+        self.pub_cmd_vel_mux.publish(self.twist_value)
 
     #指定した距離だけ前後移動
     def moveDistance(self, distance):
         try:
             #absは絶対値求める関数
             target_time = abs(distance / 0.2)
-            print 'time' + str(target_time)
             if distance >0:
                 self.twist_value.linear.x = 0.24
             elif distance < 0:
                 self.twist_value.linear.x = -0.24
+            rate = rospy.Rate(30)
             start_time = time.time()
             end_time = time.time()
-            rate = rospy.Rate(30)
             while end_time - start_time <= target_time:
                 self.pub_cmd_vel_mux.publish(self.twist_value)
                 end_time = time.time()
