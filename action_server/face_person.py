@@ -36,6 +36,8 @@ class FacePersonAS():
         self.person_flg = False
         self.timeout = 0
 
+        self.sas.start()
+
     def recogCB(self, receive_msg):
         obj_list = receive_msg.data.split(" ")
         for i in range(len(obj_list)):
@@ -52,12 +54,12 @@ class FacePersonAS():
         self.person_flg = False
         return 'success'
 
-    def execute(self, userdata):
+    def execute(self, goal):
         try:
             rospy.loginfo('Start FacePerson')
             m6Control(-0.2)
             rospy.loginfo('Start detection')
-            result = detection()
+            result = self.detection()
             self.kc.angularControl(0.0)
             rospy.loginfo('Finish detection')
             m6Control(0.3)

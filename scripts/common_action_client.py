@@ -96,7 +96,7 @@ def findPersonAC():
 def facePersonAC():
     try: 
         rospy.loginfo('Start FacePerson')
-        ac = actionlib.SimpleActionClient('find_person', FacePersonAction)
+        ac = actionlib.SimpleActionClient('face_person', FacePersonAction)
         ac.wait_for_server()
 
         goal = FacePersonGoal()
