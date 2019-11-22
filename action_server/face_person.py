@@ -16,7 +16,7 @@ from std_msgs.msg import String
 from mimi_common_pkg.msg import FacePersonAction, FacePersonResult
 import actionlib
 
-sys.path.insert(0, '/home/issei/catkin_ws/src/mimi_common_pkg/scripts')
+sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
 from common_function import KobukiControl, m6Control
 
 

@@ -93,6 +93,33 @@ def findPersonAC():
     except rospy.ROSInterruptException:
         pass
 
+def facePersonAC():
+    try: 
+        rospy.loginfo('Start FacePerson')
+        ac = actionlib.SimpleActionClient('find_person', FacePersonAction)
+        ac.wait_for_server()
+
+        goal = FacePersonGoal()
+        goal.data = 'start'
+
+        ac.send_goal(goal)
+        ac.wait_for_result()
+
+        result = ac.get_result()
+        print result
+        while not rospy.is_shutdown():
+            if result.data == 'success':
+                rospy.loginfo('Success FacePerson')
+                ac.cancel_goal()
+                return 'success'
+            elif result.data == 'failed':
+                rospy.loginfo('Failed FacePerson')
+                ac.cancel_goal()
+                return 'failed'
+    except rospy.ROSInterruptException:
+        pass
+
+
 
 def navigationAC(coord_list):
     try:
