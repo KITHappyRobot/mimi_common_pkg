@@ -99,13 +99,16 @@ class Saving(smach.State):
                 input_keys = ['saving_in_data'])
 
     def execute(self, userdata):
-        rospy.loginfo('Executing state: SAVING')
-        while not rospy.is_shutdown():
+        try:
+            rospy.loginfo('Executing state: SAVING')
             rospy.loginfo('Create Parameter')
             rospy.set_param('/location_dict', userdata.saving_in_data)
             rosparam.dump_params('/home/athome/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml', '/location_dict')
             rospy.loginfo('Created!')
             return 'save_finish'
+        except rospy.ROSInterruptException:
+            rospy.loginfo('**Interrupted**')
+            pass
 
 
 def main():
