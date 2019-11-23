@@ -26,14 +26,15 @@ class Waiting(smach.State):
                 output_keys = ['waiting_out_data'])
         #Subscriber
         rospy.Subscriber('/setup_location/location_name', String, self.getLocationNameCB)
-        self.location_name = 'Null'
+        self.location_name = 'null'
 
     def getLocationNameCB(self, receive_msg):
         self.location_name = receive_msg.data
 
     def execute(self, userdata):
         rospy.loginfo('Executing state: WAITING')
-        while not rospy.is_shutdown() and self.location_name == 'Null':
+        self.location_name = 'null'
+        while not rospy.is_shutdown() and self.location_name == 'null':
             rospy.loginfo('Waiting for topic...')
             rospy.sleep(1.0)
         userdata.waiting_out_data = self.location_name
@@ -101,10 +102,9 @@ class Saving(smach.State):
     def execute(self, userdata):
         try:
             rospy.loginfo('Executing state: SAVING')
-            rospy.loginfo('Create Parameter')
             rospy.set_param('/location_dict', userdata.saving_in_data)
             rosparam.dump_params('/home/athome/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml', '/location_dict')
-            rospy.loginfo('Created!')
+            rospy.loginfo('Saving complete')
             return 'save_finish'
         except rospy.ROSInterruptException:
             rospy.loginfo('**Interrupted**')
@@ -113,7 +113,7 @@ class Saving(smach.State):
 
 def main():
     sm = smach.StateMachine(outcomes = ['finish_setup_location'])
-    sm.userdata.location_name = 'Null'
+    sm.userdata.location_name = 'null'
     with sm:
         smach.StateMachine.add(
                 'WAITING',

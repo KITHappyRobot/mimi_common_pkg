@@ -67,36 +67,10 @@ def approachPersonAC():
         pass
 
 
-def findPersonAC():
-    try: 
-        rospy.loginfo('Start FindPerson')
-        ac = actionlib.SimpleActionClient('find_person', FindPersonAction)
-        ac.wait_for_server()
-
-        goal = FindPersonGoal()
-        goal.data = 'start'
-
-        ac.send_goal(goal)
-        ac.wait_for_result()
-
-        result = ac.get_result()
-        print result
-        while not rospy.is_shutdown():
-            if result.data == 'success':
-                rospy.loginfo('Success FindPerson')
-                ac.cancel_goal()
-                return 'success'
-            elif result.data == 'failed':
-                rospy.loginfo('Failed FindPerson')
-                ac.cancel_goal()
-                return 'failed'
-    except rospy.ROSInterruptException:
-        pass
-
-def facePersonAC():
+def localizePersonAC():
     try: 
         rospy.loginfo('Start FacePerson')
-        ac = actionlib.SimpleActionClient('face_person', FacePersonAction)
+        ac = actionlib.SimpleActionClient('localize_person', LocalizePersonAction)
         ac.wait_for_server()
 
         goal = FacePersonGoal()
@@ -109,11 +83,11 @@ def facePersonAC():
         print result
         while not rospy.is_shutdown():
             if result.data == 'success':
-                rospy.loginfo('Success FacePerson')
+                rospy.loginfo('Success LocalizePerson')
                 ac.cancel_goal()
                 return 'success'
             elif result.data == 'failed':
-                rospy.loginfo('Failed FacePerson')
+                rospy.loginfo('Failed LocalizePerson')
                 ac.cancel_goal()
                 return 'failed'
     except rospy.ROSInterruptException:

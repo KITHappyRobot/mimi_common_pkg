@@ -13,26 +13,26 @@ import time
 #ROS関係
 import rospy
 from std_msgs.msg import String
-from mimi_common_pkg.msg import FacePersonAction, FacePersonResult
+from mimi_common_pkg.msg import LocalizePersonAction, PersonLocalizeResult
 import actionlib
 
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
 from common_function import KobukiControl, m6Control
 
 
-class FacePersonAS():
+class LocalizePersonAS():
     def __init__(self):
         #ActionServer
         self.sas = actionlib.SimpleActionServer(
-                'face_person',
-                FacePersonAction,
+                'localize_person',
+                LocalizePersonAction,
                 execute_cb = self.execute,
                 auto_start = False)
         #Subscriber
         self.sub_recog = rospy.Subscriber('/recog_obj', String, self.recogCB)
         
         self.kc = KobukiControl()
-        self.result = FacePersonResult()
+        self.result = LocalizePersonResult()
         self.person_flg = False
         self.timeout = 0
 
@@ -56,7 +56,7 @@ class FacePersonAS():
 
     def execute(self, goal):
         try:
-            rospy.loginfo('Start FacePerson')
+            rospy.loginfo('Start LocalizePerson')
             m6Control(-0.2)
             rospy.loginfo('Start detection')
             result = self.detection()
@@ -69,7 +69,7 @@ class FacePersonAS():
             else:
                 result.data = result
                 self.sas.set_succeeded(self.result)
-            rospy.loginfo('Finish FacePerson')
+            rospy.loginfo('Finish LocalizePerson')
         except rospy.ROSInterruptException:
             rospy.loginfo('**Interrupted**')
             pass
@@ -77,8 +77,8 @@ class FacePersonAS():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('face_person', anonymous = True)
-        fp_server = FacePersonAS()
+        rospy.init_node('localize_person', anonymous = True)
+        fp_server = LocalizePersonAS()
         rospy.spin()
     except rospy.ROSInterruptException:
         rospy.loginfo('**Interrupted**')

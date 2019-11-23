@@ -28,27 +28,27 @@ from common_action_client import *
 from common_function import *
 
 
-class FindPerson(smach.State):
+class Localization(smach.State):
     def __init__(self):
         smach.State.__init__(
                 self,
-                outcomes = ['find',
-                            'not_find'],
+                outcomes = ['localize',
+                            'not_localize'],
                 input_keys = ['goal_in'])
 
     def execute(self, userdata):
         try:
-            rospy.loginfo('Executing state FIND_PERSON')
-            result = findPersonAC()
+            rospy.loginfo('Executing state LOCALIZATION')
+            result = localizePersonAC()
             result = 'success'
             if result == 'success':
                 speak('I found person')
-                rospy.loginfo('Find Succes')
-                return 'find'
+                rospy.loginfo('Localization Succes')
+                return 'localize'
             else:
                 speak('I can`t find person')
-                rospy.loginfo('Find Failed')
-                return 'not_find'
+                rospy.loginfo('Localization Failed')
+                return 'not_localize'
         except rospy.ROSInterruptException:
             rospy.loginfo('**Interrupted**')
             pass
@@ -145,7 +145,7 @@ class Navigation(smach.State):
 def main():
     sm_top = StateMachine(
             outcomes = ['success',
-                        'find_failed',
+                        'localize_failed',
                         'navi_failed',
                         'get_failed',
                         'preempted'],
@@ -155,10 +155,10 @@ def main():
 
     with sm_top:
         StateMachine.add(
-                'FIND_PERSON',
-                FindPerson(),
-                transitions = {'find':'GET_COORDINATE',
-                               'not_find':'find_failed'},
+                'LOCALIZATION',
+                Localization(),
+                transitions = {'localize':'GET_COORDINATE',
+                               'not_localize':'localize_failed'},
                 remapping = {'goal_in':'goal_message'})
 
         StateMachine.add(
