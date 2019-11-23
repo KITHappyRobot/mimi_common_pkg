@@ -9,23 +9,19 @@
 
 #Python関係ライブラリ
 import sys
-import time
 #ROS関係ライブラリ
 import rospy
-import roslib
 
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
 from common_action_client import *
 from common_function import *
 
-kc = KobukiControl()
 def main():
-    rospy.loginfo('Test ActionServer')
+    rospy.loginfo('Start Test')
     #approachPersonAC()
-    #findPersonAC()
     #enterTheRoomAC(0.5)
     facePersonAC()
-    rospy.loginfo('Finish test')
+    rospy.loginfo('Finish Test')
 
 if __name__ == '__main__':
     try:
