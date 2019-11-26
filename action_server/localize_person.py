@@ -13,7 +13,7 @@ import time
 #ROS関係
 import rospy
 from std_msgs.msg import String
-from mimi_common_pkg.msg import LocalizePersonAction, PersonLocalizeResult
+from mimi_common_pkg.msg import LocalizePersonAction, LocalizePersonResult
 from object_recognizer.srv import RecognizeExistence
 import actionlib
 
