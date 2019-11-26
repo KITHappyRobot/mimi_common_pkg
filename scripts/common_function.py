@@ -10,16 +10,14 @@
 #Python関係
 import time
 from yaml import load
-import subprocess
 #ROS関係
 import rospy
 import rosparam
-import actionlib
-from std_srvs.srv import Empty
 from std_msgs.msg import String, Float64
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
+
+from import GPSR_data as gd
 
 #Grobal
 pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
@@ -32,14 +30,37 @@ def speak(phrase):
     rospy.sleep(2.0)
 
 
+class ActionPlan():
+    def __init__(self):
+        self.listen_count = 1
+        self.listen_result = 'ERROR'
+
+    def fixSentence(self):
+        self.listen_result = gd.FixSentence()
+        print self.listen_result
+        return self.listen_result
+
+    def execute(self):
+        rospy.loginfo('Start ActionPlan')
+        #聞き取りは３回行う
+        while not rospy.is_shutdown() and self.listen_count <= 3:
+            result = self.fixSentence()
+            if self.listen_result == 'ERROR':
+                rospy.loginfo('Listening Failed')
+                speak('One more time please')
+                self.listen_count += 1
+            else:
+                rospy.loginfo('Listening Success')
+                return self.listen_result
+        return 'failure'
+
+
 #m6(首のサーボモータ)の制御
 def m6Control(value):
-    #念のため型変換
     data = Float64()
     data = value
     rospy.sleep(0.1)
     pub_m6.publish(data)
-    rospy.loginfo("Changing m6 pose")
 
 
 #kobukiの制御

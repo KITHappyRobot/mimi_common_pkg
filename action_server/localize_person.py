@@ -14,6 +14,7 @@ import time
 import rospy
 from std_msgs.msg import String
 from mimi_common_pkg.msg import LocalizePersonAction, PersonLocalizeResult
+from object_recognizer.srv import RecognizeExistence
 import actionlib
 
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
@@ -30,9 +31,12 @@ class LocalizePersonAS():
                 auto_start = False)
         #Subscriber
         self.sub_recog = rospy.Subscriber('/recog_obj', String, self.recogCB)
+        #Service
+        self.obj_recog = rospy.ServiceProxy('/object_recognize', RecognizeExistence)
         
         self.kc = KobukiControl()
         self.result = LocalizePersonResult()
+        self.data = RecognizeExistence()
         self.person_flg = False
         self.timeout = 0
 
@@ -45,13 +49,16 @@ class LocalizePersonAS():
                 self.person_flg = True
 
     def detection(self):
-        self.person_flg = False
+        #self.person_flg = False
         self.timeout = time.time() + 30
-        while not rospy.is_shutdown() and self.person_flg == False:
+        self.data.target = 'person'
+        result = self.obj_recog(self.data)
+        while not rospy.is_shutdown() and result.existence == False:
             self.kc.angularControl(0.3)
+            result = self.obj_recog(self.data)
             if time.time() > self.timeout:
                 return 'failure'
-        self.person_flg = False
+        #self.person_flg = False
         return 'success'
 
     def execute(self, goal):

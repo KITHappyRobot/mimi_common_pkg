@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+fjksdahihk
+
+fhsiy[#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #--------------------------------------------------------------------
 # Title: ActionClientを纏めたPythonスクリプト
@@ -143,3 +145,4 @@ def navigationAC(coord_list):
                     count += 1
     except rospy.ROSInterruptException:
         pass
+    ooohdsjsdfiwehaerwhvfwub
