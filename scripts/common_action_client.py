@@ -1,6 +1,4 @@
-fjksdahihk
-
-fhsiy[#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #--------------------------------------------------------------------
 # Title: ActionClientを纏めたPythonスクリプト
