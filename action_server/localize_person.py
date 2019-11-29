@@ -13,20 +13,20 @@ import time
 #ROS関係
 import rospy
 from std_msgs.msg import String
-from mimi_common_pkg.msg import LocalizePersonAction, LocalizePersonResult
-from object_recognizer.srv import RecognizeExistence
+from mimi_common_pkg.msg import LocalizeObjectAction, LocalizeObjectResult
+from mimi_common_pkg.srv import RecognizeExistence
 import actionlib
 
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
 from common_function import KobukiControl, m6Control
 
 
-class LocalizePersonAS():
+class LocalizeObjectAS():
     def __init__(self):
         #ActionServer
         self.sas = actionlib.SimpleActionServer(
-                'localize_person',
-                LocalizePersonAction,
+                'localize_object',
+                LocalizeObjectAction,
                 execute_cb = self.execute,
                 auto_start = False)
         #Subscriber
@@ -35,7 +35,7 @@ class LocalizePersonAS():
         self.obj_recog = rospy.ServiceProxy('/object_recognize', RecognizeExistence)
         
         self.kc = KobukiControl()
-        self.result = LocalizePersonResult()
+        self.result = LocalizeObjectResult()
         self.data = RecognizeExistence()
         self.person_flg = False
         self.timeout = 0
@@ -52,7 +52,7 @@ class LocalizePersonAS():
         #self.person_flg = False
         self.timeout = time.time() + 30
         self.data.target = 'person'
-        result = self.obj_recog(self.data)
+        result = self.obj_recog(self.data.target)
         while not rospy.is_shutdown() and result.existence == False:
             self.kc.angularControl(0.3)
             result = self.obj_recog(self.data)
@@ -63,10 +63,11 @@ class LocalizePersonAS():
 
     def execute(self, goal):
         try:
-            rospy.loginfo('Start LocalizePerson')
+            print goal.data
+            rospy.loginfo('Start LocalizeObject')
             m6Control(-0.2)
             rospy.loginfo('Start detection')
-            result = self.detection()
+            result = self.detection(goal.data)
             self.kc.angularControl(0.0)
             rospy.loginfo('Finish detection')
             m6Control(0.3)
@@ -76,7 +77,7 @@ class LocalizePersonAS():
             else:
                 result.data = result
                 self.sas.set_succeeded(self.result)
-            rospy.loginfo('Finish LocalizePerson')
+            rospy.loginfo('Finish LocalizeObject')
         except rospy.ROSInterruptException:
             rospy.loginfo('**Interrupted**')
             pass
@@ -84,8 +85,8 @@ class LocalizePersonAS():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('localize_person', anonymous = True)
-        fp_server = LocalizePersonAS()
+        rospy.init_node('localize_object', anonymous = True)
+        fp_server = LocalizeObjectAS()
         rospy.spin()
     except rospy.ROSInterruptException:
         rospy.loginfo('**Interrupted**')

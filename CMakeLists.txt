@@ -72,7 +72,7 @@ add_action_files(
     FILES
     EnterTheRoom.action
     ApproachPerson.action
-    LocalizePerson.action
+    LocalizeObject.action
     )
 
 ## Generate added messages and services with any dependencies listed here

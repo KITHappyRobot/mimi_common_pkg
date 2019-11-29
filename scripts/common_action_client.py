@@ -67,14 +67,14 @@ def approachPersonAC():
         pass
 
 
-def localizePersonAC():
+def localizeObjectAC(receive_msg):
     try: 
-        rospy.loginfo('Start FacePerson')
-        ac = actionlib.SimpleActionClient('localize_person', LocalizePersonAction)
+        rospy.loginfo('Start LocalizeObject')
+        ac = actionlib.SimpleActionClient('localize_object', LocalizeObjectAction)
         ac.wait_for_server()
 
-        goal = FacePersonGoal()
-        goal.data = 'start'
+        goal = LocalizeObjectGoal()
+        goal.data = receive_msg
 
         ac.send_goal(goal)
         ac.wait_for_result()
@@ -83,11 +83,11 @@ def localizePersonAC():
         print result
         while not rospy.is_shutdown():
             if result.data == 'success':
-                rospy.loginfo('Success LocalizePerson')
+                rospy.loginfo('Success LocalizeObject')
                 ac.cancel_goal()
                 return 'success'
             elif result.data == 'failed':
-                rospy.loginfo('Failed LocalizePerson')
+                rospy.loginfo('Failed LocalizeObject')
                 ac.cancel_goal()
                 return 'failed'
     except rospy.ROSInterruptException:
