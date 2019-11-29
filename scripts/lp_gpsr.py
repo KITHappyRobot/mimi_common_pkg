@@ -18,7 +18,11 @@ class GPSR_data(object):
         self._GetNamesData_()
 
         # [start]Category1.txtに保存されたデータを配列に入れる
+<<<<<<< HEAD
         f = open("/home/rei/catkin_ws/src/gpsr/resource/Category1.txt")
+=======
+        f = open("/home/athome/catkin_ws/src/gpsr/resource/Category1.txt")
+>>>>>>> 7e7150779c252a1c217036f7203d82db01676a23
         datas = f.read()
         f.close()
         self.data_sent_list_nb = datas.split('\n')
@@ -31,7 +35,11 @@ class GPSR_data(object):
     # xmlからオブジェクトとか部屋の名前を取得する
     # イニシャライザの中で呼び出される
     def _GetNamesData_(self):
+<<<<<<< HEAD
         path = os.path.abspath("/home/rei/catkin_ws/src/gpsr/resource/GPSRCmdGen-2018-Montreal/CommonFiles")
+=======
+        path = os.path.abspath("/home/athome/catkin_ws/src/gpsr/resource/GPSRCmdGen-2018-Montreal/CommonFiles")
+>>>>>>> 7e7150779c252a1c217036f7203d82db01676a23
         self.Obj_root = ET.parse(os.path.join(path, "Objects.xml")).getroot()
         Nam_root = ET.parse(os.path.join(path, "Names.xml")).getroot()
         self.Loc_root = ET.parse(os.path.join(path, "Locations.xml")).getroot()

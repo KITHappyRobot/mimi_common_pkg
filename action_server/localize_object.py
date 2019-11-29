@@ -32,7 +32,7 @@ class LocalizeObjectAS():
         #Subscriber
         self.sub_recog = rospy.Subscriber('/recog_obj', String, self.recogCB)
         #Service
-        self.obj_recog = rospy.ServiceProxy('/object_recognize', RecognizeExistence)
+        self.obj_recog = rospy.ServiceProxy('/object/recognize', RecognizeExistence)
         
         self.kc = KobukiControl()
         self.result = LocalizeObjectResult()
@@ -48,14 +48,15 @@ class LocalizeObjectAS():
             if obj_list[i] == 'person':
                 self.person_flg = True
 
-    def detection(self):
+    def detection(self, receive_msg):
         #self.person_flg = False
         self.timeout = time.time() + 30
-        self.data.target = 'person'
+        print receive_msg
+        self.data.target = receive_msg
         result = self.obj_recog(self.data.target)
         while not rospy.is_shutdown() and result.existence == False:
             self.kc.angularControl(0.3)
-            result = self.obj_recog(self.data)
+            result = self.obj_recog(self.data.target)
             if time.time() > self.timeout:
                 return 'failure'
         #self.person_flg = False

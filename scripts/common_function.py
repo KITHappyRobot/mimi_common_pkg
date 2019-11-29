@@ -10,6 +10,7 @@
 #Python関係
 import time
 from yaml import load
+import sys
 #ROS関係
 import rospy
 import rosparam
@@ -17,7 +18,8 @@ from std_msgs.msg import String, Float64
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 
-
+sys.path.insert(0, '~/catkin_ws/src/gpsr/')
+from lp_gpsr import GPSR_data
 #Grobal
 pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
 pub_m6 = rospy.Publisher('/m6_controller/command', Float64, queue_size = 1)
@@ -33,25 +35,23 @@ class ActionPlan():
     def __init__(self):
         self.listen_count = 1
         self.listen_result = 'ERROR'
+        self.gd  = GPSR_data()
 
     def fixSentence(self):
-        self.listen_result = gd.FixSentence()
+        self.listen_result = self.gd.FixSentence()
         print self.listen_result
         return self.listen_result
 
     def execute(self):
         rospy.loginfo('Start ActionPlan')
         #聞き取りは３回行う
-        while not rospy.is_shutdown() and self.listen_count <= 3:
-            result = self.fixSentence()
-            if self.listen_result == 'ERROR':
-                rospy.loginfo('Listening Failed')
-                speak('One more time please')
-                self.listen_count += 1
-            else:
-                rospy.loginfo('Listening Success')
-                return self.listen_result
-        return 'failure'
+        result = self.fixSentence()
+        if self.listen_result == 'ERROR':
+            rospy.loginfo('Listening Failed')
+            return 'failure'
+        else:
+            rospy.loginfo('Listening Success')
+            return self.listen_result
 
 
 #m6(首のサーボモータ)の制御
