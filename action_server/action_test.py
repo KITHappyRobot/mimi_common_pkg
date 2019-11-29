@@ -20,7 +20,10 @@ def main():
     rospy.loginfo('Start Test')
     #approachPersonAC()
     #enterTheRoomAC(0.5)
-    LocalizePersonAC()
+    #localizeObjectAC('person')
+    ap = ActionPlan()
+    result = ap.execute()
+    print result
     rospy.loginfo('Finish Test')
 
 if __name__ == '__main__':
