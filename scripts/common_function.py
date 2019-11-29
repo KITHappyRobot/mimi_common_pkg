@@ -17,7 +17,6 @@ from std_msgs.msg import String, Float64
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 
-from import GPSR_data as gd
 
 #Grobal
 pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
@@ -108,7 +107,7 @@ class KobukiControl():
 def searchLocationName(target_name):
     rospy.loginfo("Search LocationName")
     #location_dictのyamlファイルを読み込む
-    f = open('/home/issei/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml')
+    f = open('/home/athome/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml')
     location_dict = load(f)
     f.close()
     if target_name in location_dict:

@@ -1,4 +1,4 @@
-#/usr/bin/env python 
+#!/usr/bin/env python 
 # -*- coding: utf-8 -*-
 #--------------------------------------------------------------------
 # Title: ドアが開いたことを検出して入室するActionServer
@@ -17,7 +17,7 @@ from sensor_msgs.msg import LaserScan
 from std_msgs.msg import String
 
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
-from common_function import KobukiControl as kc, speak
+from common_function import *
 
 
 class EnterTheRoomAS():
@@ -31,6 +31,7 @@ class EnterTheRoomAS():
                 execute_cb = self.execute,
                 auto_start = False)
 
+        self.kc = KobukiControl()
         self.result = EnterTheRoomResult()
         self.front_laser_dist = 999.9
 
@@ -55,7 +56,7 @@ class EnterTheRoomAS():
             rospy.loginfo('Start EnterTheRoom')
             distance = self.detection(goal.distance)
             speak('Thank you')
-            kc.moveDistance(distance)
+            self.kc.moveDistance(distance)
             self.result.data = 'success'
             self.sas.set_succeeded(self.result)
             rospy.loginfo('Finish EnterTheRoom')
