@@ -21,9 +21,7 @@ def main():
     #approachPersonAC()
     #enterTheRoomAC(0.5)
     #localizeObjectAC('person')
-    ap = ActionPlan()
-    result = ap.execute()
-    print result
+    speak('Helloi oonishi reitaro')
     rospy.loginfo('Finish Test')
 
 if __name__ == '__main__':

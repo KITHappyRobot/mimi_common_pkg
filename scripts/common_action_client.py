@@ -7,6 +7,8 @@
 # Memo: 
 #--------------------------------------------------------------------
 
+# Python
+import sys
 #ROS関係
 import rospy
 import actionlib
@@ -14,6 +16,8 @@ from std_srvs.srv import Empty
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from mimi_common_pkg.msg import *
 
+sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts/')
+from common_function import *
 
 def enterTheRoomAC(receive_msg):
     try:
@@ -98,6 +102,7 @@ def localizeObjectAC(receive_msg):
 def navigationAC(coord_list):
     try:
         rospy.loginfo("Start Navigation")
+        m6Control(0.3)
         ac = actionlib.SimpleActionClient('move_base', MoveBaseAction)
         ac.wait_for_server()
         #CostmapService
@@ -143,4 +148,3 @@ def navigationAC(coord_list):
                     count += 1
     except rospy.ROSInterruptException:
         pass
-    ooohdsjsdfiwehaerwhvfwub

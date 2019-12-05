@@ -17,41 +17,16 @@ import rosparam
 from std_msgs.msg import String, Float64
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
+from gcp_texttospeech.srv import TTS
 
-sys.path.insert(0, '~/catkin_ws/src/gpsr/')
-from lp_gpsr import GPSR_data
 #Grobal
 pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
 pub_m6 = rospy.Publisher('/m6_controller/command', Float64, queue_size = 1)
-
+tts_srv = rospy.ServiceProxy('/texttospeech', TTS)
 
 #話す *発話エンジンはpicottsで設定する
 def speak(phrase):
-    pub_speak.publish(phrase)
-    rospy.sleep(2.0)
-
-
-class ActionPlan():
-    def __init__(self):
-        self.listen_count = 1
-        self.listen_result = 'ERROR'
-        self.gd  = GPSR_data()
-
-    def fixSentence(self):
-        self.listen_result = self.gd.FixSentence()
-        print self.listen_result
-        return self.listen_result
-
-    def execute(self):
-        rospy.loginfo('Start ActionPlan')
-        #聞き取りは３回行う
-        result = self.fixSentence()
-        if self.listen_result == 'ERROR':
-            rospy.loginfo('Listening Failed')
-            return 'failure'
-        else:
-            rospy.loginfo('Listening Success')
-            return self.listen_result
+    tts_srv(phrase)
 
 
 #m6(首のサーボモータ)の制御
