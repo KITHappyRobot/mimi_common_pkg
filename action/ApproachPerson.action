@@ -1,9 +1,8 @@
 #Difine the goal
 string data
-string pose
 ---
 #Define the result
-string data
+bool data
 ---
 #Define the a feedback message
 string data

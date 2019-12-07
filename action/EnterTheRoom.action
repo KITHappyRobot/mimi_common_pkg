@@ -2,7 +2,7 @@
 float32 distance
 ---
 #Difine the results
-string data
+bool data
 ---
 #Difine the a feedback message
 int8 state

@@ -124,14 +124,14 @@ class Navigation(smach.State):
             rospy.sleep(0.1)
             result = navigationAC(coord_list)
             print result
-            if self.result == 'success':
+            if self.result == True:
                 m6Control(0.4)
                 speak('I came close to person')
                 #ap_result = result
                 #userdata.result_message.data = ap_result
                 userdata.result_message.data = self.result
                 return 'arrive'
-            elif self.result == 'failed':
+            else:
                 speak('I can`t came close to person')
                 #ap_result = result
                 #userdata.result_message.data = ap_result

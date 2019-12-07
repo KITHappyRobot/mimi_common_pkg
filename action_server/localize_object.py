@@ -58,9 +58,9 @@ class LocalizeObjectAS():
             self.kc.angularControl(0.3)
             result = self.obj_recog(self.data.target)
             if time.time() > self.timeout:
-                return 'failure'
+                return False
         #self.person_flg = False
-        return 'success'
+        return True
 
     def execute(self, goal):
         try:
@@ -72,7 +72,7 @@ class LocalizeObjectAS():
             self.kc.angularControl(0.0)
             rospy.loginfo('Finish detection')
             m6Control(0.3)
-            if result is 'success':
+            if result is True:
                 self.result.data = result
                 self.sas.set_succeeded(self.result)
             else:

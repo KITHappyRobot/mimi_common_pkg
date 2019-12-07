@@ -32,14 +32,14 @@ def enterTheRoomAC(receive_msg):
         ac.wait_for_result()
     
         result = ac.get_result()
-        if result.data == 'success':
+        if result.data is True:
             rospy.loginfo("Success EnterTheRoom")
             ac.cancel_goal()
-            return 'success'
+            return True
         else:
             rospy.loginfo("Failed EnterTheRoom")
             ac.cancel_goal()
-            return 'failed'
+            return False
     except rospy.ROSInterruptException:
         pass
 
@@ -60,13 +60,13 @@ def approachPersonAC():
         if result.data == 'success':
             rospy.loginfo("Success ApproachPerson")
             ac.cancel_goal()
-            return 'success'
+            return True
         elif result.data == 'aborted':
             rospy.loginfo("Aborted ApproachPerson")
             ac.cancel_goal()
-            return 'aborted'
+            return False
         else:
-            return 'failed'
+            return False
     except rospy.ROSInterruptException:
         pass
 
@@ -89,11 +89,11 @@ def localizeObjectAC(receive_msg):
             if result.data == 'success':
                 rospy.loginfo('Success LocalizeObject')
                 ac.cancel_goal()
-                return 'success'
+                return True
             elif result.data == 'failed':
                 rospy.loginfo('Failed LocalizeObject')
                 ac.cancel_goal()
-                return 'failed'
+                return False
     except rospy.ROSInterruptException:
         pass
 
@@ -131,14 +131,14 @@ def navigationAC(coord_list):
             elif state == 3:
                 rospy.loginfo('Navigation success!!')
                 ac.cancel_goal()
-                return 'success'
+                return True
                 state = 0
             elif state == 4:
                 if count == 100:
                     count = 0
                     rospy.loginfo('Navigation Failed')
                     ac.cancel_goal()
-                    return 'failed'
+                    return False
                 else:
                     rospy.loginfo('Clear Costmaps')
                     clear_costmaps()

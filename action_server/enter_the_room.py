@@ -57,7 +57,7 @@ class EnterTheRoomAS():
             distance = self.detection(goal.distance)
             speak('Thank you')
             self.kc.moveDistance(distance)
-            self.result.data = 'success'
+            self.result.data = True
             self.sas.set_succeeded(self.result)
             rospy.loginfo('Finish EnterTheRoom')
         except rospy.ROSInterruptException:
