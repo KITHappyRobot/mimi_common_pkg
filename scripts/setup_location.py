@@ -8,7 +8,7 @@
 #       Smachを用いたプログラムの処女作
 #--------------------------------------------------------------------
 
-#ROS関係
+# ROS
 import rospy
 import rosparam
 from nav_msgs.msg import Odometry
@@ -24,7 +24,7 @@ class Waiting(smach.State):
                 self,
                 outcomes = ['set_start'],
                 output_keys = ['waiting_out_data'])
-        #Subscriber
+        # Subscriber
         rospy.Subscriber('/setup_location/location_name', String, self.getLocationNameCB)
         self.location_name = 'null'
 
@@ -34,8 +34,8 @@ class Waiting(smach.State):
     def execute(self, userdata):
         rospy.loginfo('Executing state: WAITING')
         self.location_name = 'null'
+        rospy.loginfo('Waiting for topic...')
         while not rospy.is_shutdown() and self.location_name == 'null':
-            rospy.loginfo('Waiting for topic...')
             rospy.sleep(1.0)
         userdata.waiting_out_data = self.location_name
         return 'set_start'
@@ -48,7 +48,7 @@ class Setting(smach.State):
                 outcomes = ['set_complete', 'set_finish'],
                 input_keys = ['setting_in_data'],
                 output_keys = ['setting_out_data'])
-        #Subscriber
+        # Subscriber
         rospy.Subscriber('/odom', Odometry, self.getOdomCB)
 
         self.location_dict = {}
@@ -70,26 +70,22 @@ class Setting(smach.State):
 
     def execute(self, userdata):
         rospy.loginfo('Executing state: SETTING')
-        while not rospy.is_shutdown():
-            if userdata.setting_in_data == 'set_finish':
-                rospy.loginfo('Finish Setting')
-                userdata.setting_out_data = self.location_dict
-                return 'set_finish'
-            elif userdata.setting_in_data in self.location_dict:
-                rospy.loginfo('LocationName already exists')
-                return 'set_complete'
-            else:
-                rospy.loginfo('Add <' + userdata.setting_in_data + '> position')
-                while not rospy.is_shutdown() and self.location_pose_x == 0.00:
-                    rospy.loginfo('Waiting for Odometry...')
-                    rospy.sleep(1.0)
-                self.location_dict[userdata.setting_in_data] = []
-                self.location_dict[userdata.setting_in_data].append(self.location_pose_x)
-                self.location_dict[userdata.setting_in_data].append(self.location_pose_y)
-                self.location_dict[userdata.setting_in_data].append(self.location_pose_z)
-                self.location_dict[userdata.setting_in_data].append(self.location_pose_w)
-                print self.location_dict[userdata.setting_in_data]
-                return 'set_complete'
+        if userdata.setting_in_data == 'set_finish':
+            rospy.loginfo('Finish Setting')
+            userdata.setting_out_data = self.location_dict
+            return 'set_finish'
+        elif userdata.setting_in_data in self.location_dict:
+            rospy.loginfo('*LocationName already exists*')
+            return 'set_complete'
+        else:
+            rospy.loginfo('Add <' + userdata.setting_in_data + '> position')
+            self.location_dict[userdata.setting_in_data] = []
+            self.location_dict[userdata.setting_in_data].append(self.location_pose_x)
+            self.location_dict[userdata.setting_in_data].append(self.location_pose_y)
+            self.location_dict[userdata.setting_in_data].append(self.location_pose_z)
+            self.location_dict[userdata.setting_in_data].append(self.location_pose_w)
+            print self.location_dict[userdata.setting_in_data]
+            return 'set_complete'
 
 
 class Saving(smach.State):
@@ -138,9 +134,5 @@ def main():
     outcome = sm.execute()
 
 if __name__ == '__main__':
-    try:
-        rospy.init_node('setup_location', anonymous = True)
-        main()
-    except rospy.ROSInterruptException:
-        rospy.loginfo('**Interrupted**')
-        pass
+    rospy.init_node('setup_location', anonymous = True)
+    main()

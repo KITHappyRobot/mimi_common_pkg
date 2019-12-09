@@ -9,7 +9,7 @@
 
 # Python
 import sys
-#ROS関係
+# ROS
 import rospy
 import actionlib
 from std_srvs.srv import Empty
@@ -42,6 +42,7 @@ def enterTheRoomAC(receive_msg):
             return False
     except rospy.ROSInterruptException:
         pass
+
 
 def approachPersonAC():
     try:
@@ -98,16 +99,15 @@ def localizeObjectAC(receive_msg):
         pass
 
 
-
 def navigationAC(coord_list):
     try:
         rospy.loginfo("Start Navigation")
         m6Control(0.3)
         ac = actionlib.SimpleActionClient('move_base', MoveBaseAction)
         ac.wait_for_server()
-        #CostmapService
+        # CostmapService
         clear_costmaps = rospy.ServiceProxy('move_base/clear_costmaps', Empty)
-        #Set Goal
+        # Set Goal
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = 'map'
         goal.target_pose.header.stamp = rospy.Time.now()
@@ -115,14 +115,13 @@ def navigationAC(coord_list):
         goal.target_pose.pose.position.y = coord_list[1]
         goal.target_pose.pose.orientation.z = coord_list[2]
         goal.target_pose.pose.orientation.w = coord_list[3]
-        #Costmapを消去
+        # Costmapを消去
         rospy.wait_for_service('move_base/clear_costmaps')
         clear_costmaps()
         rospy.sleep(1.0)
-        #Goalを送信
         ac.send_goal(goal)
         state = ac.get_state()
-        count = 0#<---clear_costmapsの実行回数をカウントするための変数
+        count = 0# <---clear_costmapsの実行回数をカウントするための変数
         while not rospy.is_shutdown():
             state = ac.get_state()
             if state == 1:

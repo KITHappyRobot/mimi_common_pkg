@@ -7,11 +7,11 @@
 # Memo: mimiの上(頭)から下(台車)の順に記述
 #--------------------------------------------------------------------
 
-#Python関係
+# Python
 import time
 from yaml import load
 import sys
-#ROS関係
+# ROS
 import rospy
 import rosparam
 from std_msgs.msg import String, Float64
@@ -19,17 +19,17 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from gcp_texttospeech.srv import TTS
 
-#Grobal
+# Grobal
 pub_speak = rospy.Publisher('/tts', String, queue_size = 1)
 pub_m6 = rospy.Publisher('/m6_controller/command', Float64, queue_size = 1)
 tts_srv = rospy.ServiceProxy('/texttospeech', TTS)
 
-#話す *発話エンジンはpicottsで設定する
+# 話す
 def speak(phrase):
     tts_srv(phrase)
 
 
-#m6(首のサーボモータ)の制御
+# m6(首のサーボモータ)の制御
 def m6Control(value):
     data = Float64()
     data = value
@@ -37,30 +37,30 @@ def m6Control(value):
     pub_m6.publish(data)
 
 
-#kobukiの制御
+# kobukiの制御
 class KobukiControl():
     def __init__(self):
-        #Publisher
+        # Publisher
         self.pub_cmd_vel_mux = rospy.Publisher('cmd_vel_mux/input/teleop', Twist, queue_size = 1)
 
         self.twist_value = Twist()
 
-    #ただ前進
+    # ただ前進
     def linearControl(self, value):
         self.twist_value.linear.x = value
         rospy.sleep(0.1)
         self.pub_cmd_vel_mux.publish(self.twist_value)
 
-    #ただ回転
+    # ただ回転
     def angularControl(self, value):
         self.twist_value.angular.z = value
         rospy.sleep(0.1)
         self.pub_cmd_vel_mux.publish(self.twist_value)
 
-    #指定した距離だけ前後移動
+    # 指定した距離だけ前後移動
     def moveDistance(self, distance):
         try:
-            #absは絶対値求める関数
+            # absは絶対値求める関数
             target_time = abs(distance / 0.2)
             if distance >0:
                 self.twist_value.linear.x = 0.24
@@ -78,10 +78,10 @@ class KobukiControl():
             pass
 
 
-#文字列をパラメータの/location_dictから検索して位置座標を返す
+# 文字列をパラメータの/location_dictから検索して位置座標を返す
 def searchLocationName(target_name):
     rospy.loginfo("Search LocationName")
-    #location_dictのyamlファイルを読み込む
+    # location_dictのyamlファイルを読み込む
     f = open('/home/athome/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml')
     location_dict = load(f)
     f.close()
