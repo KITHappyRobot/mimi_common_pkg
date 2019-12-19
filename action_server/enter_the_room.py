@@ -45,8 +45,8 @@ class EnterTheRoomAS():
         target_distance = self.front_laser_dist + receive_msg - 0.05
         speak("Please open the door")
         rospy.loginfo('Start detection')
+        rospy.loginfo('Waiting for the door to open')
         while self.front_laser_dist <= target_distance:
-            rospy.loginfo('Waiting for the door to open')
             rospy.sleep(1.0)
         rospy.loginfo('Door opened')
         return target_distance
@@ -66,10 +66,6 @@ class EnterTheRoomAS():
 
 
 if __name__ == '__main__':
-    try:
-        rospy.init_node('enter_the_room', anonymous = True)
-        ddo_server = EnterTheRoomAS()
-        rospy.spin()
-    except rospy.ROSInterruptException:
-        rospy.loginfo('**Interrupted**')
-        pass
+    rospy.init_node('enter_the_room', anonymous = True)
+    ddo_server = EnterTheRoomAS()
+    rospy.spin()
