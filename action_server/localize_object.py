@@ -7,10 +7,10 @@
 # Memo:
 #---------------------------------------------------------------------
 
-#Pyhon関係
+#Pyhon
 import sys
 import time
-#ROS関係
+#ROS
 import rospy
 from std_msgs.msg import String
 from mimi_common_pkg.msg import LocalizeObjectAction, LocalizeObjectResult
