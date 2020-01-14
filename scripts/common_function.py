@@ -79,12 +79,13 @@ class KobukiControl():
 
 
 # 文字列をパラメータの/location_dictから検索して位置座標を返す
-def searchLocationName(target_name):
+def searchLocationName(target_file, target_name):
     rospy.loginfo("Search LocationName")
+    location_dict = rosparam.get(target_name)
     # location_dictのyamlファイルを読み込む
-    f = open('/home/athome/catkin_ws/src/mimi_common_pkg/config/location_dict.yaml')
-    location_dict = load(f)
-    f.close()
+    # f = open('/home/athome/catkin_ws/src/mimi_common_pkg/config/' + target_file + '.yaml')
+    # location_dict = load(f)
+    # f.close()
     if target_name in location_dict:
         print location_dict[target_name]
         rospy.loginfo("Retrun location_dict")
